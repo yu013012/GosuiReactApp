@@ -3,7 +3,6 @@ import {StyleSheet, View, Text, Button, TextInput, TouchableOpacity, ScrollView,
 import constants from '../helper/constants'
 
 type dataProps = {
-  key?: string,
   name?: string,
   allow?: string,
   tantou?: string,
@@ -14,10 +13,10 @@ type dataProps = {
 
 // ()はリターンがいらないけど、{}はいる
 export const UserView = (props: dataProps) => {
-  const { key, name, allow, tantou, start_flg, onclick, timer } = props
+  const { name, allow, tantou, start_flg, onclick, timer } = props
 
   return (
-    <View key={key} style={styles.container}>
+    <View style={styles.container}>
       <TouchableOpacity style={start_flg ? styles.start_end_button_red : styles.start_end_button} onPress={onclick}>
         <Text style={{color: 'white'}}>{start_flg ? constants.end : constants.start}</Text>
       </TouchableOpacity>
@@ -83,7 +82,6 @@ const styles = StyleSheet.create({
   tantou: {
     color: 'white',
     fontSize: 15,
-    alignItems: 'left',
     padding: 10
   },
   tantou_view1: {
@@ -113,7 +111,6 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   name_view: {
-    //marginTop: 5,
     justifyContent: 'center',
     backgroundColor: 'blue',
     width: '78%',

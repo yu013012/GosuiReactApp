@@ -6,7 +6,7 @@ import { Alert } from '../components/alert_component';
 import {BlueStart, BlueEnd} from '../helper/bluetooth'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Api from '../helper/api'
-import Token from '../helper/token'
+import { Token } from '../helper/token'
 import DeviceInfo from 'react-native-device-info';
 import AlertSound from '../helper/alert'
 
@@ -20,7 +20,7 @@ type ApiSend = {
   [macaddress: string]: number
 }
 
-export const Home = (props: {navigation}) => {
+export const Home = (props: {navigation: any}) => {
   const {navigation} = props
   // 全体の状態管理
   const { data, setData } = useMyContext();
@@ -122,7 +122,7 @@ export const Home = (props: {navigation}) => {
         TNO: `${tno}`,
         token: `${token_temp}`,
       }
-      const data = await Api({act: "get_data", params: params, setData});
+      const data: any = await Api({act: "get_data", params: params, setData});
       console.log(data)
       BlueStart(data, setData);
     }
@@ -135,7 +135,7 @@ export const Home = (props: {navigation}) => {
   }, []);
 
   // 開始ボタンクリック
-  const onClickStartEnd = (uuid) => {
+  const onClickStartEnd = (uuid: string) => {
     // blue接続していない場合は処理をスキップする
     if (data[uuid].allow === "") {
       return
@@ -146,12 +146,13 @@ export const Home = (props: {navigation}) => {
     setData(updatedData);
     // タイマーの起動リセット
     if (updatedData[uuid].start_flg) {
-      const id = setInterval(() => {
+      const id: any = setInterval(() => {
         // ここは別処理になるので下記で再度宣言しないと、タイマーが更新されない
         const updatedData = { ...data };
         updatedData[uuid].timer = updatedData[uuid].timer + 1;
         setData(updatedData);
       }, 1000);
+      console.log(id)
       updatedData[uuid].timer_id = id;
       setData(updatedData);
     } else {
@@ -165,7 +166,7 @@ export const Home = (props: {navigation}) => {
   }
 
   // numberを00:00:00がたに変換
-  const formatTime = (timeInSeconds) => {
+  const formatTime = (timeInSeconds: number) => {
     const hours = Math.floor(timeInSeconds / 3600);
     const minutes = Math.floor((timeInSeconds % 3600) / 60);
     const seconds = timeInSeconds % 60;

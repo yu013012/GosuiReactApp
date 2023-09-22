@@ -67,22 +67,21 @@ export const BlueStart = (data: MyContextType, setData: React.Dispatch<React.Set
     "BleManagerDidUpdateValueForCharacteristic",
     ({ value, peripheral, characteristic, service }) => {
       let blueData: string = String(value);
-      console.log(value)
       console.log(data[peripheral].allow)
-      let dataArray = blueData.split(',');
+      let dataArray: string[] = blueData.split(',');
       // うつ伏せ
-      if (31 <= dataArray[17] && dataArray[17] <= 65) {
+      if (31 <= Number(dataArray[17]) && Number(dataArray[17]) <= 65) {
         data[peripheral].allow = "↓"
       // 仰向け
-      } else if (128 <= dataArray[17] && dataArray[17] <= 223) {
+      } else if (128 <= Number(dataArray[17]) && Number(dataArray[17]) <= 223) {
         data[peripheral].allow = "↑"
       // 横向きの時
-      } else if (224 <= dataArray[17] && dataArray[17] <= 255 || 0 <= dataArray[17] && dataArray[17] <= 30) {
+      } else if (224 <= Number(dataArray[17]) && Number(dataArray[17]) <= 255 || 0 <= Number(dataArray[17]) && Number(dataArray[17]) <= 30) {
         // 右向き
-        if (190 <= dataArray[15] && dataArray[15] <= 255) {
+        if (190 <= Number(dataArray[15]) && Number(dataArray[15]) <= 255) {
           data[peripheral].allow = "→"
         // 左向き
-        } else if (0 <= dataArray[15] && dataArray[15] <= 65) {
+        } else if (0 <= Number(dataArray[15]) && Number(dataArray[15]) <= 65) {
           data[peripheral].allow = "←"
         // 上向き
         } else {

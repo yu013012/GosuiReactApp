@@ -6,12 +6,12 @@ type dataProps = {
   params: {
     [key: string]: string
   },
-  setData?: React.Dispatch<React.SetStateAction<MyContextType>>;
+  setData: React.Dispatch<React.SetStateAction<MyContextType>>
 }
 
-const Api = async (props: dataProps): string | MyContextType => {
+const Api = async (props: dataProps): Promise<string | MyContextType> => {
   const {act, params, setData} = props
-  const result: string = await axios({
+  const result: string | {} = await axios({
     method: 'GET',
     url: "https://www.it-service.co.jp/cgi-local/gosui/gosui_app.pl",
     params: params,
@@ -21,7 +21,7 @@ const Api = async (props: dataProps): string | MyContextType => {
     if (act == "login") {
       return String(response.data['tno'])
     } else if (act == "get_data") {
-      const data = {}
+      const data: MyContextType = {}
       // ループを使って連想配列を構築
       for (let i = 1; i <= 10; i++) {
         console.log(response.data[`mac${i}`])
@@ -40,7 +40,9 @@ const Api = async (props: dataProps): string | MyContextType => {
           category: response.data[`katego${i}`],
         };
       }
+      
       setData(data)
+      
       return data
     }
     return ""

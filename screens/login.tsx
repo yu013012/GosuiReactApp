@@ -17,29 +17,19 @@ type Params = {
   PASS: string,
 }
 // ()はリターンがいらないけど、{}はいる
-export const Login = (props: {navigation}) => {
+export const Login = (props: {navigation: any}) => {
   const {navigation} = props
   const [id, setId] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [visible, setVisible] = React.useState(false);
 
-  const handleIdChange = (newText) => {
+  const handleIdChange = (newText: string) => {
     setId(newText);
   };
 
-  const handlePasswordChange = (newText) => {
+  const handlePasswordChange = (newText: string) => {
     setPassword(newText);
   };
-
-  const permisson = async () => {
-    if (Platform.OS != 'ios') {
-      const isAuthorized = await PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.BLUETOOTH_SCAN);
-      console.log(isAuthorized);
-      if (isAuthorized == false) {
-        const granted = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.BLUETOOTH_SCAN);
-      }
-    }
-  }
 
   const autoLogin = async () => {
     try {
@@ -54,7 +44,7 @@ export const Login = (props: {navigation}) => {
 
   React.useEffect(() => {
     const bluetooth = async () => {
-      check(PermissionsAndroid.PERMISSIONS.BLUETOOTH_SCAN)
+      check('android.permission.BLUETOOTH_SCAN')
       .then((result) => {
         switch (result) {
           case 'granted':
@@ -64,7 +54,7 @@ export const Login = (props: {navigation}) => {
           case 'denied':
             // 位置情報の権限が拒否されている場合の処理
             console.log("no")
-            request(PermissionsAndroid.PERMISSIONS.BLUETOOTH_SCAN)
+            request('android.permission.BLUETOOTH_SCAN')
               .then((newResult) => {
                 if (newResult === 'granted') {
                   console.log("okを押した")
@@ -115,10 +105,6 @@ export const Login = (props: {navigation}) => {
     if (Platform.OS === 'android') {
       bluetooth()
     }
-
-
-    //permisson();
-    //autoLogin();
   }, []);
 
   const login = async () => {
@@ -127,7 +113,7 @@ export const Login = (props: {navigation}) => {
       ID: id,
       PASS: password,
     }
-    const tno = await Api({act: "login", params: params});
+    const tno: any = await Api({act: "login", params: params});
     if (tno) {
       await AsyncStorage.setItem("tno", tno);
       navigation.navigate('home');

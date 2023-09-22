@@ -3,7 +3,7 @@ import {StyleSheet, View, TextInput} from 'react-native';
 
 type dataProps = {
   placeholder_: string,
-  handleChange_: void,
+  handleChange_?: (text: string) => void
   value_: string,
   secureTextEntry_: boolean
 }
