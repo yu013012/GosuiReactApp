@@ -5,55 +5,101 @@ import { useMyContext, MyContextType } from '../contexts/MyContext';
 const BleManagerModule = NativeModules.BleManager;
 const bleManagerEmitter = new NativeEventEmitter(BleManagerModule);
 
+let scanTimer: any;
+
 export const BlueStart = (data: MyContextType, setData: React.Dispatch<React.SetStateAction<MyContextType>>) => {
+  const bluestart = async () => {
+    const flg = await BleManager.start({showAlert: false}).then(() => {
+      return true;
+    }).catch((error) => {
+      console.log('初期化失敗')
+      return false;
+    });
+
+    if (flg) {
+      bluescan
+      scanTimer = setInterval(bluescan, 5000);
+    }
+  }
+
+  // 定期的なスキャンを開始するタイマー
+  const bluescan = async () => {
+    await BleManager.scan([], 5000, true).then(() => {
+      console.log("scan開始");
+    })
+  }
+
+  bluestart()
   console.log(data)
-  BleManager.enableBluetooth().then(() => {
-    BleManager.start({showAlert: false}).then(() => {
-      // 1時間スキャンする
-      BleManager.scan([], 18000, true).then(() => {
-        console.log("scan開始");
-      })
-    }).catch(error =>
-      console.error('BeManager could not be started.', error),
-    );
-  }).catch((error) => {
-    console.error("The user refuse to enable bluetooth.", error);
-  });
+
+//  BleManager.start({showAlert: false}).then(() => {
+    // 1時間スキャンする
+//    BleManager.scan([], 18000, true).then(() => {
+//      console.log("scan開始");
+//    })
+//  }).catch(error =>
+//    console.error('BeManager could not be started.', error),
+//  );
 
   // 下記検索結果
   bleManagerEmitter.addListener(
     'BleManagerDiscoverPeripheral',
     (args) => {
+      if (args.name == "AKOI_HEART") {
+        console.log(`test${args.id}${data[args.id]}`)
+      }
       if (args.name == "AKOI_HEART" && data[args.id]) {
         // 下記接続処理
         BleManager.connect(args.id).then(() => {
           console.log(`connectしました${args.id}`)
           // 書き込みに必要、iosは通知にも必要？
-          BleManager.retrieveServices(args.id);
-          // 正式な情報を取るには下記書き込みが必要
-          BleManager.writeWithoutResponse(
-            args.id,
-            "0000c62e-9910-0bac-5241-d8bda6932a2f",
-            "00000d2e-1c03-aca1-ab48-a9b908bae79e",
-            [0x28, 0x43, 0x44, 0x02, 0x03, 0x29]
-          )
-          .then((data) => {
-            console.log(data)
-            // 書き込みが完了したら傾きの通知を受け取るように設定
-            BleManager.startNotification(
-              args.id,
-              "0000C62E-9910-0BAC-5241-D8BDA6932A2F",
-              "00005991-B131-3396-014C-664C9867B917"
-            )
-            .then(() => {
-              console.log("通知設定完了")
-            }).catch((error) => {
-              console.log("通知設定失敗");
-            });
-          })
-          .catch((error) => {
-            console.log("書き込み失敗");
-          });
+          BleManager.retrieveServices(`${args.id}`).then(
+            (peripheralInfo) => {
+              // Success code
+              console.log("Peripheral info:", peripheralInfo);
+              BleManager.writeWithoutResponse(
+                args.id,
+                "0000C62E-9910-0BAC-5241-D8BDA6932A2F",
+                "00005991-B131-3396-014C-664C9867B917",
+                [0x28, 0x43, 0x44, 0x02, 0x03, 0x29]
+              )
+              .then((data) => {
+                console.log(data)
+                // 書き込みが完了したら傾きの通知を受け取るように設定
+                BleManager.startNotification(
+                  args.id,
+                  "0000C62E-9910-0BAC-5241-D8BDA6932A2F",
+                  "00005991-B131-3396-014C-664C9867B917"
+                )
+                .then(() => {
+                  console.log("通知設定完了")
+                }).catch((error) => {
+                  console.log("通知設定失敗");
+                  BleManager.disconnect(args.id)
+                  .then(() => {
+                    // Success code
+                    console.log("Disconnected");
+                  })
+                  .catch((error) => {
+                    // Failure code
+                    console.log(error);
+                  });
+                });
+              })
+              .catch((error) => {
+                console.log(`書き込みに失敗${error}`);
+                BleManager.disconnect(args.id)
+                .then(() => {
+                  // Success code
+                  console.log("Disconnected");
+                })
+                .catch((error) => {
+                  // Failure code
+                  console.log(error);
+                });
+              });
+            }
+          );
         })
         .catch((error) => {
           console.log("接続失敗");
@@ -98,6 +144,8 @@ export const BlueStart = (data: MyContextType, setData: React.Dispatch<React.Set
 }
 
 export const BlueEnd = (data: MyContextType) => {
+
+  clearInterval(scanTimer);
 
   BleManager.stopScan().then(() => {
     // Success code

@@ -133,7 +133,6 @@ export const Home = (props: {navigation: any}) => {
     }
 
     ApiAndBlueStart()
-
     return () => {
       BlueEnd(data)
       BackHandler.removeEventListener('hardwareBackPress', () => {return true});

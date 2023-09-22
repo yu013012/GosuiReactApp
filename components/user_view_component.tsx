@@ -77,7 +77,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row', // 子Viewを横に並べる
     justifyContent: 'space-between', // 子View間にスペースを均等に配置
     width: '100%',
-    alignItems: 'left', // 要素
   },
   tantou: {
     color: 'white',
@@ -102,10 +101,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: 'blue',
     width: '20%',
+    height: 100,
     alignItems: 'center', // 要素
   },
   allow: {
-    fontSize: 30,
+    fontSize: 25,
     fontWeight: 'bold',
     color: 'white',
     padding: 10,
@@ -115,6 +115,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'blue',
     width: '78%',
     alignItems: 'center', // 要素
+    height: 100,
   },
   name: {
     fontSize: 15,

@@ -136,6 +136,8 @@ export const Login = (props: {navigation: any}) => {
 
     if (Platform.OS === 'android') {
       bluetooth1()
+    } else {
+      autoLogin();
     }
   }, []);
 

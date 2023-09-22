@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { MyContextType } from '../contexts/MyContext';
-
+import { Platform } from 'react-native'
 type dataProps = {
   act: string,
   params: {
@@ -24,8 +24,10 @@ const Api = async (props: dataProps): Promise<string | MyContextType> => {
       const data: MyContextType = {}
       // ループを使って連想配列を構築
       for (let i = 1; i <= 10; i++) {
-        console.log(response.data[`mac${i}`])
-        const key = response.data[`mac${i}`];
+        let key = response.data[`uuid${i}`];
+        if (Platform.OS === 'android') {
+          key = response.data[`mac${i}`];
+        }
         if ( !key ) {
           continue;
         }
