@@ -43,8 +43,39 @@ export const Login = (props: {navigation: any}) => {
   }
 
   React.useEffect(() => {
-    const bluetooth = async () => {
-      check('android.permission.BLUETOOTH_SCAN')
+    const bluetooth1 = async () => {
+      await check('android.permission.BLUETOOTH_SCAN')
+      .then((result) => {
+        switch (result) {
+          case 'granted':
+            console.log("ok")
+            bluetooth2()
+            break;
+          case 'denied':
+            // 位置情報の権限が拒否されている場合の処理
+            console.log("no")
+            request('android.permission.BLUETOOTH_SCAN')
+              .then((newResult) => {
+                if (newResult === 'granted') {
+                  console.log("okを押した")
+                  bluetooth2()
+                } else {
+                  console.log("noを押した")
+                  setVisible(true)
+                }
+              });
+            break;
+          default:
+            console.log("no")
+            setVisible(true)
+            break;
+        }
+      });
+    }
+
+    // Blueの権限はBLUETOOTH_CONNECTとBLUETOOTH_SCANが必要みたい。この二つの一つでもかけていたら検索ができない。
+    const bluetooth2 = async () => {
+      await check('android.permission.BLUETOOTH_CONNECT')
       .then((result) => {
         switch (result) {
           case 'granted':
@@ -54,7 +85,7 @@ export const Login = (props: {navigation: any}) => {
           case 'denied':
             // 位置情報の権限が拒否されている場合の処理
             console.log("no")
-            request('android.permission.BLUETOOTH_SCAN')
+            request('android.permission.BLUETOOTH_CONNECT')
               .then((newResult) => {
                 if (newResult === 'granted') {
                   console.log("okを押した")
@@ -102,8 +133,9 @@ export const Login = (props: {navigation: any}) => {
         }
       });
     }
+
     if (Platform.OS === 'android') {
-      bluetooth()
+      bluetooth1()
     }
   }, []);
 
