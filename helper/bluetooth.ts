@@ -32,15 +32,6 @@ export const BlueStart = (data: MyContextType, setData: React.Dispatch<React.Set
   bluestart()
   console.log(data)
 
-//  BleManager.start({showAlert: false}).then(() => {
-    // 1時間スキャンする
-//    BleManager.scan([], 18000, true).then(() => {
-//      console.log("scan開始");
-//    })
-//  }).catch(error =>
-//    console.error('BeManager could not be started.', error),
-//  );
-
   // 下記検索結果
   bleManagerEmitter.addListener(
     'BleManagerDiscoverPeripheral',
