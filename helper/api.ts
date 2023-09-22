@@ -6,7 +6,7 @@ type dataProps = {
   params: {
     [key: string]: string
   },
-  setData: React.Dispatch<React.SetStateAction<MyContextType>>
+  setData?: React.Dispatch<React.SetStateAction<MyContextType>>
 }
 
 const Api = async (props: dataProps): Promise<string | MyContextType> => {
@@ -40,9 +40,9 @@ const Api = async (props: dataProps): Promise<string | MyContextType> => {
           category: response.data[`katego${i}`],
         };
       }
-      
+
       setData(data)
-      
+
       return data
     }
     return ""

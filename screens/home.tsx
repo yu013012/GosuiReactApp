@@ -6,21 +6,27 @@ import { Alert } from '../components/alert_component';
 import {BlueStart, BlueEnd} from '../helper/bluetooth'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Api from '../helper/api'
+// export defaultなら{}無し、export constなら{}の中に記載
+import { ConvertCharacter } from '../helper/allow'
 import { Token } from '../helper/token'
 import DeviceInfo from 'react-native-device-info';
 import AlertSound from '../helper/alert'
 
+// 縦画面サイズの取得
 const screenHeight = Dimensions.get('window').height;
 
+// apiの引数の型(パラメーター部分)
 type Params = {
   [key: string]: string
 }
 
+// 更新用apiの型(パラメーター部分)
 type ApiSend = {
   [macaddress: string]: number
 }
 
 export const Home = (props: {navigation: any}) => {
+  // navigation(ページ遷移)情報
   const {navigation} = props
   // 全体の状態管理
   const { data, setData } = useMyContext();
@@ -31,12 +37,14 @@ export const Home = (props: {navigation: any}) => {
   // アラート状態管理
   const [ visible, setVisible ] = useState<boolean>(false);
 
+  // android 戻るボタンの無効化
   BackHandler.addEventListener('hardwareBackPress', () => {return true});
 
   // アラート監視、5分おきAPI
   useEffect(() => {
 
     const alertAndApi = () => {
+      // うつ伏せカウント
       let visibleCount: number = 0
       // 時間の計算、5分で割り切れればtrue
       const now = new Date();
@@ -51,19 +59,20 @@ export const Home = (props: {navigation: any}) => {
       // ()だと1文だけだからifでエラーが出ていた
       Object.keys(data).map(key => {
         // データ更新用apiを送る
-        if (key !== 'visible' && isFiveMinuteInterval && apiSend[key] !== 1 && data[key].start_flg == true) {
+        if (isFiveMinuteInterval && apiSend[key] !== 1 && data[key].start_flg == true) {
           console.log(`${minutes}分なので${key}を更新します`)
           apiSend[key] = 1
           setApiSend(apiSend)
           UpdateApi(key)
         }
 
-        if (key !== 'visible' && data[key].allow === "↓" && data[key].start_flg == true) {
+        if (data[key].allow === "↓" && data[key].start_flg == true) {
           console.log(`アラート出します${key}`)
           visibleCount++
         }
       })
 
+      // うつ伏せがいたらアラートを出す
       if (visibleCount === 0) {
         setVisible(false)
       } else {
@@ -85,12 +94,11 @@ export const Home = (props: {navigation: any}) => {
         ACT: 'UPDATE_RECORD_REACT',
         TNO: `${tno}`,
         MNO: `${data[key].mno}`,
-        record_direction: `${data[key].allow}`,
+        record_direction: ConvertCharacter(data[key].allow),
         record_date: date_str,
         category_react: `${data[key].category}`,
         tantou_react: `${data[key].tantou}`,
       }
-      await console.log(params)
       await Api({act: "update_data", params: params});
     }
 
@@ -109,24 +117,22 @@ export const Home = (props: {navigation: any}) => {
   // 初期データの取得、Blueの実行
   useEffect(() => {
 
-    const GetApi = async () => {
-      //const token = await Token()
+    const ApiAndBlueStart = async () => {
       const token_temp = await DeviceInfo.getUniqueId().then((uniqueId) => {
         setToken(uniqueId)
         return uniqueId
       });
-      console.log(token_temp)
       const tno = await AsyncStorage.getItem('tno');
       const params: Params = {
         ACT: 'GET_DATA',
         TNO: `${tno}`,
         token: `${token_temp}`,
       }
-      const data: any = await Api({act: "get_data", params: params, setData});
-      console.log(data)
+      const data: any = await Api({act: "get_data", params: params, setData: setData});
       BlueStart(data, setData);
     }
-    GetApi()
+
+    ApiAndBlueStart()
 
     return () => {
       BlueEnd(data)
@@ -161,11 +167,9 @@ export const Home = (props: {navigation: any}) => {
       updatedData[uuid].timer = 0;
       setData(updatedData);
     }
-
-    //blue開始を行う
   }
 
-  // numberを00:00:00がたに変換
+  // numberを00:00:00型に変換
   const formatTime = (timeInSeconds: number) => {
     const hours = Math.floor(timeInSeconds / 3600);
     const minutes = Math.floor((timeInSeconds % 3600) / 60);
