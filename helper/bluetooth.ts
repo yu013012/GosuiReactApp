@@ -39,7 +39,7 @@ export const BlueStart = (data: MyContextType, setData: React.Dispatch<React.Set
       if (args.name == "AKOI_HEART") {
         console.log(`test${args.id}${data[args.id]}`)
       }
-      if (args.name == "AKOI_HEART" && data[args.id]) {
+      if (args.name == "AKOI_HEART" && data[args.id] != undefined) {
         // 下記接続処理
         BleManager.connect(args.id).then(() => {
           console.log(`connectしました${args.id}`)
@@ -51,7 +51,7 @@ export const BlueStart = (data: MyContextType, setData: React.Dispatch<React.Set
               BleManager.writeWithoutResponse(
                 args.id,
                 "0000C62E-9910-0BAC-5241-D8BDA6932A2F",
-                "00005991-B131-3396-014C-664C9867B917",
+                "00000D2E-1C03-ACA1-AB48-A9B908BAE79E",
                 [0x28, 0x43, 0x44, 0x02, 0x03, 0x29]
               )
               .then((data) => {
