@@ -5,11 +5,12 @@ type dataProps = {
   placeholder_: string,
   handleChange_?: (text: string) => void
   value_: string,
-  secureTextEntry_: boolean
+  secureTextEntry_: boolean,
+  id_: string
 }
 
 const Input = (props: dataProps) => {
-  const { placeholder_, handleChange_, value_, secureTextEntry_ } = props
+  const { placeholder_, handleChange_, value_, secureTextEntry_, id_ } = props
 
   return (
     <TextInput
@@ -19,6 +20,7 @@ const Input = (props: dataProps) => {
       onChangeText={handleChange_}
       value={value_}
       style={styles.textInput}
+      testID={id_}
     />
   )
 }

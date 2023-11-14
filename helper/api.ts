@@ -43,7 +43,9 @@ const Api = async (props: dataProps): Promise<string | MyContextType> => {
         };
       }
 
-      setData(data)
+      if (setData !== undefined && setData !== null) {
+        setData(data);
+      }
 
       return data
     }

@@ -5,7 +5,7 @@ enum CharacterConversion {
   RIGHT = "→",
 }
 
-export const ConvertCharacter: string = (character: string) => {
+export const ConvertCharacter = (character: string): string => {
   switch (character) {
     case CharacterConversion.UP:
       return "u";

@@ -34,8 +34,8 @@ import { MyContextProvider } from './contexts/MyContextProvider';
 // navigation定義
 const Stack = createStackNavigator();
 
-function App(): JSX.Element {
-
+//function App(): JSX.Element {
+const App = () => {
   return (
       <MyContextProvider>
         <NavigationContainer>

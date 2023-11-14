@@ -1,0 +1,10 @@
+appId: com.reactgosuiapp
+---
+- launchApp
+- tapOn:
+    id: "login"
+- inputText: "ototrip"
+- tapOn:
+    id: "password"
+- inputText: "password"
+- tapOn: ""

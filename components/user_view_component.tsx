@@ -7,8 +7,8 @@ type dataProps = {
   allow?: string,
   tantou?: string,
   start_flg?: boolean,
-  onclick?: void,
-  timer?: string,
+  onclick?: () => void,
+  timer?: string | undefined,
 }
 
 // ()はリターンがいらないけど、{}はいる

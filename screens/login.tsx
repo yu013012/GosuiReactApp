@@ -172,12 +172,14 @@ export const Login = (props: {navigation: any}) => {
                 handleChange_={handleIdChange}
                 value_={`${id}`}
                 secureTextEntry_={false}
+                id_="login"
               />
               <Input
                 placeholder_={constants.placeholder_password}
                 handleChange_={handlePasswordChange}
                 value_={`${password}`}
                 secureTextEntry_={true}
+                id_="password"
               />
               <TouchableOpacity style={[styles.login_button]} onPress={login}>
                 <Text style={{color: 'white'}}>{constants.login}</Text>

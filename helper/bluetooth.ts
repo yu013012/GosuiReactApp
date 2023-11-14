@@ -103,33 +103,34 @@ export const BlueStart = (data: MyContextType, setData: React.Dispatch<React.Set
   bleManagerEmitter.addListener(
     "BleManagerDidUpdateValueForCharacteristic",
     ({ value, peripheral, characteristic, service }) => {
+      // setStateで値の変更をする場合下記のように別変数に定義しないといけない
+      const updatedData = { ...data };
       let blueData: string = String(value);
-      console.log(data[peripheral].allow)
       let dataArray: string[] = blueData.split(',');
       // うつ伏せ
       if (31 <= Number(dataArray[17]) && Number(dataArray[17]) <= 65) {
-        data[peripheral].allow = "↓"
+        updatedData[peripheral].allow = "↓"
       // 仰向け
       } else if (128 <= Number(dataArray[17]) && Number(dataArray[17]) <= 223) {
-        data[peripheral].allow = "↑"
+        updatedData[peripheral].allow = "↑"
       // 横向きの時
       } else if (224 <= Number(dataArray[17]) && Number(dataArray[17]) <= 255 || 0 <= Number(dataArray[17]) && Number(dataArray[17]) <= 30) {
         // 右向き
         if (190 <= Number(dataArray[15]) && Number(dataArray[15]) <= 255) {
-          data[peripheral].allow = "→"
+          updatedData[peripheral].allow = "→"
         // 左向き
         } else if (0 <= Number(dataArray[15]) && Number(dataArray[15]) <= 65) {
-          data[peripheral].allow = "←"
+          updatedData[peripheral].allow = "←"
         // 上向き
         } else {
-          data[peripheral].allow = "↑"
+          updatedData[peripheral].allow = "↑"
         }
       // 72 ~ 127 : シェイク判定(上向き)
       } else {
-        data[peripheral].allow = "↑"
+        updatedData[peripheral].allow = "↑"
       }
 
-      setData(data)
+      setData(updatedData)
     }
   );
 }
