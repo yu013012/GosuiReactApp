@@ -1,5 +1,5 @@
 const constants = {
-  api: 'http://ec2-18-183-167-84.ap-northeast-1.compute.amazonaws.com/api/',
+  api: 'https://www.it-service.co.jp/',
   title: '午睡チェックへようこそ！',
   placeholder_id: 'IDを入力してください',
   placeholder_password: 'パスワードを入力してください',
