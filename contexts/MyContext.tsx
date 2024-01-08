@@ -6,7 +6,7 @@ export type MyContextType = {
     allow: string,
     tantou: string,
     start_flg: boolean,
-    timer: number,
+    timer: any,
     timer_id: number,
     mno: string,
     category: string

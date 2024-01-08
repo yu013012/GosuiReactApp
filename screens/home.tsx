@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useCallback, useMemo } from 'react'
 import {StyleSheet, View, Text, Button, TextInput, TouchableOpacity, ScrollView, ImageBackground, KeyboardAvoidingView, Dimensions, BackHandler } from 'react-native';
 import { UserView } from '../components/user_view_component';
 import { useMyContext, MyContextType } from '../contexts/MyContext';
@@ -25,9 +25,14 @@ type ApiSend = {
   [macaddress: string]: number
 }
 
+// タイマーの型
+type Timer = {
+  [macaddress: string]: number
+}
+
 export const Home = (props: {navigation: any}) => {
   // navigation(ページ遷移)情報
-  const {navigation} = props
+  const { navigation } = props
   // 全体の状態管理
   const { data, setData } = useMyContext();
   // トークン用状態管理
@@ -36,6 +41,8 @@ export const Home = (props: {navigation: any}) => {
   const [ apiSend, setApiSend ] = useState<ApiSend>({});
   // アラート状態管理
   const [ visible, setVisible ] = useState<boolean>(false);
+
+  const [ time, setTime ] = useState<Timer>({});
 
   // android 戻るボタンの無効化
   BackHandler.addEventListener('hardwareBackPress', () => {return true});
@@ -77,7 +84,6 @@ export const Home = (props: {navigation: any}) => {
         setVisible(false)
       } else {
         setVisible(true)
-        AlertSound()
       }
     }
 
@@ -129,24 +135,51 @@ export const Home = (props: {navigation: any}) => {
         token: `${token_temp}`,
       }
       const data: any = await Api({act: "get_data", params: params, setData: setData});
-      BlueStart(data, setData);
+      await BlueStart(data, setData);
+
+      // blueendtest
+      // await setTimeout(() => {
+      //   BlueEnd(data)
+      // }, 10000);
     }
 
     ApiAndBlueStart()
+
+    // アンマウント処理
     return () => {
       BlueEnd(data)
       BackHandler.removeEventListener('hardwareBackPress', () => {return true});
     }
   }, []);
 
+  // アラートを鳴らす
+  useEffect(() => {
+    const alertStartStop = () => {
+      if (visible === true) {
+        AlertSound()
+      }
+    }
+
+    alertStartStop();
+
+    const timer = setInterval(() => {
+      alertStartStop();
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, [visible]);
+
   // 開始ボタンクリック
-  const onClickStartEnd = (uuid: string) => {
+  const onClickStartEnd = useCallback((uuid: string) => {
     // blue接続していない場合は処理をスキップする
     if (data[uuid].allow === "") {
       return
     }
     // ここでボタンの色変更
     const updatedData = { ...data };
+
+    const updatedTimeData = { ...time };
+
     updatedData[uuid].start_flg = updatedData[uuid].start_flg ? false : true;
     setData(updatedData);
     // タイマーの起動リセット
@@ -154,22 +187,38 @@ export const Home = (props: {navigation: any}) => {
       const id: any = setInterval(() => {
         // ここは別処理になるので下記で再度宣言しないと、タイマーが更新されない
         const updatedData = { ...data };
-        updatedData[uuid].timer = updatedData[uuid].timer + 1;
-        setData(updatedData);
+
+        setTime((prevTime) => {
+          const updatedTime = { ...prevTime };
+          console.log(data[uuid].timer)
+          console.log(new Date())
+          const currentTime = new Date();
+          const diffInSeconds = Math.round((currentTime - data[uuid].timer) / 1000);
+          console.log(diffInSeconds)
+          updatedTime[uuid] = diffInSeconds
+          return updatedTime;
+        });
+
       }, 1000);
-      console.log(id)
+      console.log(new Date())
+      updatedData[uuid].timer = new Date();
       updatedData[uuid].timer_id = id;
       setData(updatedData);
     } else {
       clearInterval(updatedData[uuid].timer_id);
       updatedData[uuid].timer_id = 0;
-      updatedData[uuid].timer = 0;
+      updatedData[uuid].timer = "";
+      updatedTimeData[uuid] = 0;
       setData(updatedData);
+      setTime(updatedTimeData);
     }
-  }
+  }, [data,time]);
 
   // numberを00:00:00型に変換
   const formatTime = (timeInSeconds: number) => {
+    if (!timeInSeconds) {
+      timeInSeconds = 0;
+    }
     const hours = Math.floor(timeInSeconds / 3600);
     const minutes = Math.floor((timeInSeconds % 3600) / 60);
     const seconds = timeInSeconds % 60;
@@ -182,7 +231,7 @@ export const Home = (props: {navigation: any}) => {
       <View style={styles.container}>
       <Text style={{color: 'white', backgroundColor: 'blue', width: '100%', padding: 10}}>トークン：{token}</Text>
       {Object.keys(data).map(key => (
-        key == 'visible' ? '' : <UserView key={`${key}`} name={data[key].name} allow={data[key].allow} tantou={data[key].tantou} start_flg={data[key].start_flg} onclick={() => onClickStartEnd(key)} timer={formatTime(data[key].timer)} />
+        key == 'visible' ? '' : <UserView key={`${key}`} name={data[key].name} allow={data[key].allow} tantou={data[key].tantou} start_flg={data[key].start_flg} onclick={() => onClickStartEnd(key)} timer={formatTime(time[key])} />
       ))}
       </View>
     </ScrollView>

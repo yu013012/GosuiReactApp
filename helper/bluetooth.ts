@@ -17,9 +17,50 @@ export const BlueStart = (data: MyContextType, setData: React.Dispatch<React.Set
     });
 
     if (flg) {
-      bluescan
-      scanTimer = setInterval(bluescan, 5000);
+      scanTimer = setInterval(bluescan, 6000);
     }
+  }
+
+  // TODO 充電切れなどで接続が切れた場合の対応
+  // 10秒に一回ほど通知を受け取っているか確認し、受け取っていなければ接続を試みる
+  const blueconnect = async (args: any) => {
+    BleManager.connect(args.id).then(() => {
+      console.log(`connectしました${args.id}`)
+      // 書き込みに必要、iosは通知にも必要？
+      BleManager.retrieveServices(`${args.id}`).then(
+        (peripheralInfo) => {
+          // Success code
+          console.log("Peripheral info:", peripheralInfo);
+          BleManager.writeWithoutResponse(
+            args.id,
+            "0000C62E-9910-0BAC-5241-D8BDA6932A2F",
+            "00000D2E-1C03-ACA1-AB48-A9B908BAE79E",
+            [0x28, 0x43, 0x44, 0x02, 0x03, 0x29]
+          )
+          .then((data) => {
+            BleManager.startNotification(
+              args.id,
+              "0000C62E-9910-0BAC-5241-D8BDA6932A2F",
+              "00005991-B131-3396-014C-664C9867B917"
+            )
+            .then(() => {
+              console.log("通知設定完了")
+            }).catch((error) => {
+              console.log("通知設定失敗");
+              blueconnect(args)
+            });
+          })
+          .catch((error) => {
+            console.log(`書き込みに失敗${error}`);
+            blueconnect(args)
+          });
+        }
+      );
+    })
+    .catch((error) => {
+      // 接続失敗
+      console.log(error);
+    });
   }
 
   // 定期的なスキャンを開始するタイマー
@@ -30,71 +71,14 @@ export const BlueStart = (data: MyContextType, setData: React.Dispatch<React.Set
   }
 
   bluestart()
-  console.log(data)
 
   // 下記検索結果
   bleManagerEmitter.addListener(
     'BleManagerDiscoverPeripheral',
     (args) => {
-      if (args.name == "AKOI_HEART") {
-        console.log(`test${args.id}${data[args.id]}`)
-      }
       if (args.name == "AKOI_HEART" && data[args.id] != undefined) {
         // 下記接続処理
-        BleManager.connect(args.id).then(() => {
-          console.log(`connectしました${args.id}`)
-          // 書き込みに必要、iosは通知にも必要？
-          BleManager.retrieveServices(`${args.id}`).then(
-            (peripheralInfo) => {
-              // Success code
-              console.log("Peripheral info:", peripheralInfo);
-              BleManager.writeWithoutResponse(
-                args.id,
-                "0000C62E-9910-0BAC-5241-D8BDA6932A2F",
-                "00000D2E-1C03-ACA1-AB48-A9B908BAE79E",
-                [0x28, 0x43, 0x44, 0x02, 0x03, 0x29]
-              )
-              .then((data) => {
-                console.log(data)
-                // 書き込みが完了したら傾きの通知を受け取るように設定
-                BleManager.startNotification(
-                  args.id,
-                  "0000C62E-9910-0BAC-5241-D8BDA6932A2F",
-                  "00005991-B131-3396-014C-664C9867B917"
-                )
-                .then(() => {
-                  console.log("通知設定完了")
-                }).catch((error) => {
-                  console.log("通知設定失敗");
-                  BleManager.disconnect(args.id)
-                  .then(() => {
-                    // Success code
-                    console.log("Disconnected");
-                  })
-                  .catch((error) => {
-                    // Failure code
-                    console.log(error);
-                  });
-                });
-              })
-              .catch((error) => {
-                console.log(`書き込みに失敗${error}`);
-                BleManager.disconnect(args.id)
-                .then(() => {
-                  // Success code
-                  console.log("Disconnected");
-                })
-                .catch((error) => {
-                  // Failure code
-                  console.log(error);
-                });
-              });
-            }
-          );
-        })
-        .catch((error) => {
-          console.log("接続失敗");
-        });
+        blueconnect(args)
       }
     }
   );
@@ -104,33 +88,54 @@ export const BlueStart = (data: MyContextType, setData: React.Dispatch<React.Set
     "BleManagerDidUpdateValueForCharacteristic",
     ({ value, peripheral, characteristic, service }) => {
       // setStateで値の変更をする場合下記のように別変数に定義しないといけない
+      var changeCount = 0;
       const updatedData = { ...data };
       let blueData: string = String(value);
       let dataArray: string[] = blueData.split(',');
       // うつ伏せ
       if (31 <= Number(dataArray[17]) && Number(dataArray[17]) <= 65) {
+        if (updatedData[peripheral].allow !="↓") {
+          changeCount++;
+        }
         updatedData[peripheral].allow = "↓"
       // 仰向け
       } else if (128 <= Number(dataArray[17]) && Number(dataArray[17]) <= 223) {
+        if (updatedData[peripheral].allow !="↑") {
+          changeCount++;
+        }
         updatedData[peripheral].allow = "↑"
       // 横向きの時
       } else if (224 <= Number(dataArray[17]) && Number(dataArray[17]) <= 255 || 0 <= Number(dataArray[17]) && Number(dataArray[17]) <= 30) {
         // 右向き
         if (190 <= Number(dataArray[15]) && Number(dataArray[15]) <= 255) {
+          if (updatedData[peripheral].allow !="→") {
+            changeCount++;
+          }
           updatedData[peripheral].allow = "→"
         // 左向き
         } else if (0 <= Number(dataArray[15]) && Number(dataArray[15]) <= 65) {
+          if (updatedData[peripheral].allow !="←") {
+            changeCount++;
+          }
           updatedData[peripheral].allow = "←"
         // 上向き
         } else {
+          if (updatedData[peripheral].allow !="↑") {
+            changeCount++;
+          }
           updatedData[peripheral].allow = "↑"
         }
       // 72 ~ 127 : シェイク判定(上向き)
       } else {
+        if (updatedData[peripheral].allow !="↑") {
+          changeCount++;
+        }
         updatedData[peripheral].allow = "↑"
       }
 
-      setData(updatedData)
+      if (changeCount > 0) {
+        setData(updatedData)
+      }
     }
   );
 }
@@ -138,10 +143,10 @@ export const BlueStart = (data: MyContextType, setData: React.Dispatch<React.Set
 export const BlueEnd = (data: MyContextType) => {
 
   clearInterval(scanTimer);
-
+  const updatedData = { ...data };
   BleManager.stopScan().then(() => {
     // Success code
-    console.log("Scan stopped");
+    console.log("スキャン終了");
   });
 
   Object.keys(data).map(key => {
@@ -154,11 +159,11 @@ export const BlueEnd = (data: MyContextType) => {
       BleManager.disconnect(key)
       .then(() => {
         // Success code
-        console.log("Disconnected");
+        console.log(`${key}：切断`);
       })
       .catch((error) => {
         // Failure code
-        console.log(error);
+        console.log(`${key}：切断失敗`);
       });
     }
   })
