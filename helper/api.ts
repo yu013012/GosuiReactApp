@@ -48,6 +48,11 @@ const Api = async (props: dataProps): Promise<string | MyContextType> => {
       }
 
       return data
+    } else if (act == 'update_data') {
+      if (response.data) {
+        console.log(`担当: ${response.config.params.tantou_react}失敗`)
+        return "ng"
+      }
     }
     return ""
   })

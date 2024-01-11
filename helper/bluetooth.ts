@@ -76,7 +76,10 @@ export const BlueStart = (data: MyContextType, setData: React.Dispatch<React.Set
   bleManagerEmitter.addListener(
     'BleManagerDiscoverPeripheral',
     (args) => {
-      if (args.name == "AKOI_HEART" && data[args.id] != undefined) {
+      // 大文字小文字変換
+      const uppercasedString = args.id.toUpperCase();
+      const lowercasedString = args.id.toLowerCase();
+      if (args.name == "AKOI_HEART" && (data[uppercasedString] != undefined || data[lowercasedString] != undefined)) {
         // 下記接続処理
         blueconnect(args)
       }
@@ -92,6 +95,21 @@ export const BlueStart = (data: MyContextType, setData: React.Dispatch<React.Set
       const updatedData = { ...data };
       let blueData: string = String(value);
       let dataArray: string[] = blueData.split(',');
+
+      const uppercasedString = peripheral.toUpperCase();
+      const lowercasedString = peripheral.toLowerCase();
+      if (data[uppercasedString] == undefined && data[lowercasedString] == undefined) {
+        return
+      }
+
+      if (data[uppercasedString] != undefined) {
+        peripheral = uppercasedString
+      }
+      
+      if (data[lowercasedString] != undefined) {
+        peripheral = lowercasedString
+      }
+
       // うつ伏せ
       if (31 <= Number(dataArray[17]) && Number(dataArray[17]) <= 65) {
         if (updatedData[peripheral].allow !="↓") {

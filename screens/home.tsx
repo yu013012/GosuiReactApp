@@ -56,20 +56,23 @@ export const Home = (props: {navigation: any}) => {
       // 時間の計算、5分で割り切れればtrue
       const now = new Date();
       const minutes = now.getMinutes();
+      console.log(minutes)
       const isFiveMinuteInterval = minutes % 5 === 0;
 
       // apiフラグをリセット
-      if (!isFiveMinuteInterval) {
-        setApiSend({})
+      if (!isFiveMinuteInterval && Object.keys(apiSend).length != 0) {
+        setApiSend((apiSend_) => {
+          return {};
+        });
+        console.log("来たよーーーーーーーーーーーーー")
       }
 
       // ()だと1文だけだからifでエラーが出ていた
       Object.keys(data).map(key => {
         // データ更新用apiを送る
+        console.log(`${key}:${isFiveMinuteInterval}|${apiSend[key]}|${data[key].start_flg}`)
         if (isFiveMinuteInterval && apiSend[key] !== 1 && data[key].start_flg == true) {
           console.log(`${minutes}分なので${key}を更新します`)
-          apiSend[key] = 1
-          setApiSend(apiSend)
           UpdateApi(key)
         }
 
@@ -105,7 +108,11 @@ export const Home = (props: {navigation: any}) => {
         category_react: `${data[key].category}`,
         tantou_react: `${data[key].tantou}`,
       }
-      await Api({act: "update_data", params: params});
+      const res = await Api({act: "update_data", params: params});
+      if (res == "") {
+        apiSend[key] = 1
+        setApiSend(apiSend)
+      }
     }
 
     // タイマーをスタートしたり、allowの向きが変わるたびにここが呼ばれるのでタイマーだと呼ばれないことがあるので下記
@@ -118,7 +125,7 @@ export const Home = (props: {navigation: any}) => {
 
     // コンポーネントがアンマウントされた場合にタイマーをクリアする
     return () => clearTimeout(timer);
-  }, [data]);
+  }, [data, apiSend]);
 
   // 初期データの取得、Blueの実行
   useEffect(() => {
@@ -182,6 +189,7 @@ export const Home = (props: {navigation: any}) => {
 
     updatedData[uuid].start_flg = updatedData[uuid].start_flg ? false : true;
     setData(updatedData);
+
     // タイマーの起動リセット
     if (updatedData[uuid].start_flg) {
       const id: any = setInterval(() => {
@@ -190,17 +198,13 @@ export const Home = (props: {navigation: any}) => {
 
         setTime((prevTime) => {
           const updatedTime = { ...prevTime };
-          console.log(data[uuid].timer)
-          console.log(new Date())
-          const currentTime = new Date();
+          const currentTime: any = new Date();
           const diffInSeconds = Math.round((currentTime - data[uuid].timer) / 1000);
-          console.log(diffInSeconds)
           updatedTime[uuid] = diffInSeconds
           return updatedTime;
         });
 
       }, 1000);
-      console.log(new Date())
       updatedData[uuid].timer = new Date();
       updatedData[uuid].timer_id = id;
       setData(updatedData);
