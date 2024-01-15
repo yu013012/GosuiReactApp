@@ -231,7 +231,7 @@ export const Home = (props: {navigation: any}) => {
 
   return (
     <ScrollView>
-      <Alert visible={visible} text="うつ伏せになっています！" />
+      <Alert visible={visible} text="うつ伏せになっています！" data={data} />
       <View style={styles.container}>
       <Text style={{color: 'white', backgroundColor: 'blue', width: '100%', padding: 10}}>トークン：{token}</Text>
       {Object.keys(data).map(key => (
