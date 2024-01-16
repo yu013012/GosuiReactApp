@@ -44,6 +44,8 @@ export const Home = (props: {navigation: any}) => {
 
   const [ time, setTime ] = useState<Timer>({});
 
+  let number_count = 0;
+
   // android 戻るボタンの無効化
   BackHandler.addEventListener('hardwareBackPress', () => {return true});
 
@@ -235,7 +237,7 @@ export const Home = (props: {navigation: any}) => {
       <View style={styles.container}>
       <Text style={{color: 'white', backgroundColor: 'blue', width: '100%', padding: 10}}>トークン：{token}</Text>
       {Object.keys(data).map(key => (
-        key == 'visible' ? '' : <UserView key={`${key}`} name={data[key].name} allow={data[key].allow} tantou={data[key].tantou} start_flg={data[key].start_flg} onclick={() => onClickStartEnd(key)} timer={formatTime(time[key])} />
+        key == 'visible' ? '' : <UserView key={`${key}`} name={data[key].name} allow={data[key].allow} tantou={data[key].tantou} start_flg={data[key].start_flg} onclick={() => onClickStartEnd(key)} timer={formatTime(time[key])} numberCount={++number_count} />
       ))}
       </View>
     </ScrollView>

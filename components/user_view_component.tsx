@@ -9,11 +9,12 @@ type dataProps = {
   start_flg?: boolean,
   onclick?: () => void,
   timer?: string | undefined,
+  numberCount?: int
 }
 
 // ()はリターンがいらないけど、{}はいる
 export const UserView = (props: dataProps) => {
-  const { name, allow, tantou, start_flg, onclick, timer } = props
+  const { name, allow, tantou, start_flg, onclick, timer, numberCount } = props
 
   return (
     <View style={styles.container}>
@@ -23,11 +24,17 @@ export const UserView = (props: dataProps) => {
       <Text style={styles.timer}>{timer ? timer : '00:00:00'}</Text>
 
       <View style={styles.row_view}>
+        <View style={styles.number}>
+          <Text style={styles.tantou_number}>{`${numberCount}`}</Text>
+        </View>
+      </View>
+
+      <View style={styles.row_view}>
         <View style={styles.tantou_view1}>
-          <Text style={styles.tantou}>{constants.tantou}</Text>
+          <Text style={styles.tantou_number}>{constants.tantou}</Text>
         </View>
         <View style={styles.tantou_view2}>
-          <Text style={styles.tantou}>{tantou ? tantou : constants.tantou_none}</Text>
+          <Text style={styles.tantou_number}>{tantou ? tantou : constants.tantou_none}</Text>
         </View>
       </View>
 
@@ -78,7 +85,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between', // 子View間にスペースを均等に配置
     width: '100%',
   },
-  tantou: {
+  tantou_number: {
     color: 'white',
     fontSize: 15,
     padding: 10
@@ -129,5 +136,12 @@ const styles = StyleSheet.create({
     borderBottomColor: 'black', // 下線の色
     borderStyle: 'dotted', // 下線のスタイルを点線に設定
     width: '100%', // Viewを横いっぱいに広げる
+  },
+  number: {
+    marginTop: 5,
+    backgroundColor: 'blue',
+    width: '100%',
+    alignItems: 'center', // 要素
+    justifyContent: 'center',
   },
 });
