@@ -19,7 +19,7 @@ export const UserView = (props: dataProps) => {
   return (
     <View style={styles.container}>
       <TouchableOpacity style={start_flg ? styles.start_end_button_red : styles.start_end_button} onPress={onclick}>
-        <Text style={{color: 'white'}}>{start_flg ? constants.end : constants.start}</Text>
+        <Text style={{color: 'white', fontSize: 20}}>{start_flg ? constants.end : constants.start}</Text>
       </TouchableOpacity>
       <Text style={styles.timer}>{timer ? timer : '00:00:00'}</Text>
 
@@ -87,7 +87,7 @@ const styles = StyleSheet.create({
   },
   tantou_number: {
     color: 'white',
-    fontSize: 15,
+    fontSize: 20,
     padding: 10
   },
   tantou_view1: {
@@ -125,7 +125,7 @@ const styles = StyleSheet.create({
     height: 100,
   },
   name: {
-    fontSize: 15,
+    fontSize: 20,
     fontWeight: 'bold',
     color: 'white',
     padding: 10,

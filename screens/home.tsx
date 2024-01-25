@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback, useMemo } from 'react'
-import {StyleSheet, View, Text, Button, TextInput, TouchableOpacity, ScrollView, ImageBackground, KeyboardAvoidingView, Dimensions, BackHandler } from 'react-native';
+import {StyleSheet, View, Text, Button, TextInput, TouchableOpacity, ScrollView, ImageBackground, KeyboardAvoidingView, Dimensions, BackHandler, Switch } from 'react-native';
 import { UserView } from '../components/user_view_component';
 import { useMyContext, MyContextType } from '../contexts/MyContext';
 import { Alert } from '../components/alert_component';
@@ -11,6 +11,7 @@ import { ConvertCharacter } from '../helper/allow'
 import { Token } from '../helper/token'
 import DeviceInfo from 'react-native-device-info';
 import AlertSound from '../helper/alert'
+import AlertSoundM from '../helper/mimawari_alert'
 
 // 縦画面サイズの取得
 const screenHeight = Dimensions.get('window').height;
@@ -44,14 +45,26 @@ export const Home = (props: {navigation: any}) => {
 
   const [ time, setTime ] = useState<Timer>({});
 
+  const [isEnabled, setIsEnabled] = useState(false);
+
+  const [isAlert, setIsAlert] = useState(false);
+
+  const [isAlertView, setIsAlertView] = useState(false);
+
+  const [isMimawari, setIsMimawari] = useState(false);
+
   let number_count = 0;
 
   // android 戻るボタンの無効化
   BackHandler.addEventListener('hardwareBackPress', () => {return true});
 
+  const toggleSwitch = () => {
+    setIsEnabled((previousState) => !previousState);
+  };
+
   // アラート監視、5分おきAPI
   useEffect(() => {
-
+    console.log("dsfd")
     const alertAndApi = () => {
       // うつ伏せカウント
       let visibleCount: number = 0
@@ -129,6 +142,40 @@ export const Home = (props: {navigation: any}) => {
     return () => clearTimeout(timer);
   }, [data, apiSend]);
 
+  useEffect(() => {
+
+    const mimawari = () => {
+      // 時間の計算、5分で割り切れればtrue
+      const now = new Date();
+      const minutes = now.getMinutes();
+      const isFiveMinuteInterval = minutes % 5 === 0;
+
+      // 見回り設定がオンだったら
+      if (isEnabled) {
+        console.log("設定がオンになった")
+        if (!isFiveMinuteInterval && isMimawari) {
+          setIsMimawari((isMimawari) => {
+            return false;
+          });
+        } else if (isFiveMinuteInterval && !isMimawari) {
+          // アラート
+          AlertSoundM()
+          setIsMimawari((isMimawari) => {
+            return true;
+          });
+        }
+      }
+    }
+
+    // 毎秒実行
+    const timer = setInterval(() => {
+      mimawari();
+    }, 1000);
+
+    // コンポーネントがアンマウントされた場合にタイマーをクリアする
+    return () => clearTimeout(timer);
+  }, [isMimawari, isEnabled]);
+
   // 初期データの取得、Blueの実行
   useEffect(() => {
 
@@ -165,7 +212,15 @@ export const Home = (props: {navigation: any}) => {
   useEffect(() => {
     const alertStartStop = () => {
       if (visible === true) {
+        if (isAlert === false) {
+          setIsAlert(true)
+        }
         AlertSound()
+      } else {
+        if (isAlert === true) {
+          setIsAlert(false)
+          setIsAlertView(false)
+        }
       }
     }
 
@@ -177,6 +232,29 @@ export const Home = (props: {navigation: any}) => {
 
     return () => clearTimeout(timer);
   }, [visible]);
+
+  // アラート画面の表示
+  useEffect(() => {
+    const showAlert = () => {
+      if (isAlert === true) {
+        if (isAlertView == true) {
+          setIsAlertView(false)
+        } else {
+          setIsAlertView(true)
+        }
+      } else {
+        if (isAlertView == true) {
+          setIsAlertView(false)
+        }
+      }
+    }
+
+    const timer = setInterval(() => {
+      showAlert();
+    }, 1500);
+
+    return () => clearTimeout(timer);
+  }, [isAlert, isAlertView]);
 
   // 開始ボタンクリック
   const onClickStartEnd = useCallback((uuid: string) => {
@@ -232,14 +310,29 @@ export const Home = (props: {navigation: any}) => {
   };
 
   return (
+
     <ScrollView>
-      <Alert visible={visible} text="うつ伏せになっています！" data={data} />
+
       <View style={styles.container}>
-      <Text style={{color: 'white', backgroundColor: 'blue', width: '100%', padding: 10}}>トークン：{token}</Text>
-      {Object.keys(data).map(key => (
-        key == 'visible' ? '' : <UserView key={`${key}`} name={data[key].name} allow={data[key].allow} tantou={data[key].tantou} start_flg={data[key].start_flg} onclick={() => onClickStartEnd(key)} timer={formatTime(time[key])} numberCount={++number_count} />
-      ))}
+        <View style={styles.container2}>
+          <Text style={{color: 'white', fontSize: 20}}>見回りアラート：</Text>
+          <View style={styles.toggleContainer}>
+            <Switch
+              trackColor={{ false: '#767577', true: '#81b0ff' }}
+              thumbColor={isEnabled ? '#f5dd4b' : '#f4f3f4'}
+              ios_backgroundColor="#3e3e3e"
+              onValueChange={toggleSwitch}
+              value={isEnabled}
+            />
+            <Text style={{color: 'white', fontSize: 20}}>{isEnabled ? 'ON' : 'OFF'}</Text>
+          </View>
+        </View>
+        <Text style={{color: 'white', backgroundColor: 'blue', width: '100%', padding: 10, fontSize: 20}}>トークン：{token}</Text>
+        {Object.keys(data).map(key => (
+          key == 'visible' ? '' : <UserView key={`${key}`} name={data[key].name} allow={data[key].allow} tantou={data[key].tantou} start_flg={data[key].start_flg} onclick={() => onClickStartEnd(key)} timer={formatTime(time[key])} numberCount={++number_count} />
+        ))}
       </View>
+      <Alert visible={isAlertView} text="うつ伏せになっています！" data={data} />
     </ScrollView>
   )
 }
@@ -255,5 +348,18 @@ const styles = StyleSheet.create({
     paddingTop: 50,
     paddingBottom: 50,
     minHeight: screenHeight,
+  },
+  container2: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'blue',
+    marginBottom: 30,
+    width: '100%',
+    padding: 10
+  },
+  toggleContainer: {
+    marginLeft: 10, // 適宜調整してください
+    flexDirection: 'row',
+    alignItems: 'center',
   },
 });

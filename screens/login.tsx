@@ -182,7 +182,7 @@ export const Login = (props: {navigation: any}) => {
                 id_="password"
               />
               <TouchableOpacity style={[styles.login_button]} onPress={login}>
-                <Text style={{color: 'white'}}>{constants.login}</Text>
+                <Text style={{color: 'white', fontSize: 20}}>{constants.login}</Text>
               </TouchableOpacity>
             </View>
           </ImageBackground>

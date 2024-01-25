@@ -25,13 +25,13 @@ export const Alert = (props: dataProps) => {
 
   return (
       <Modal
-        animationType="slide" // モーダルの表示アニメーションを設定
+        animationType="fade" // モーダルの表示アニメーションを設定
         transparent={true} // 背景を透明にする
         visible={visible} // モーダルの表示状態
       >
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-          <View style={{ backgroundColor: 'grey', padding: 20, opacity: 1, width: '80%', alignItems: 'center' }}>
-            <Text style={{color: 'red', fontSize: 17}}>{alert_text}</Text>
+          <View style={{ backgroundColor: 'red', padding: 20, opacity: 1, width: '80%', alignItems: 'center' }}>
+            <Text style={{color: 'white', fontSize: 23}}>{alert_text}</Text>
           </View>
         </View>
       </Modal>
