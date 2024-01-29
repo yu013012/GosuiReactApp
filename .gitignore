@@ -64,3 +64,5 @@ yarn-error.log
 
 # testing
 /coverage
+/.jest/cache
+/__tests__/__snapshots__/App.test.tsx.snap
