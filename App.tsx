@@ -46,7 +46,7 @@ const App = () => {
               options={{
                 title: '午睡チェック', // ヘッダーに表示するタイトル
                 headerStyle: {
-                  backgroundColor: 'blue', // ヘッダーの背景色
+                  backgroundColor: '#1fa19b', // ヘッダーの背景色
                 },
                 headerTintColor: 'white', // ヘッダーのテキスト色
                 headerTitleStyle: {
@@ -61,7 +61,7 @@ const App = () => {
               options={{
                 title: '午睡チェック', // ヘッダーに表示するタイトル
                 headerStyle: {
-                  backgroundColor: 'blue', // ヘッダーの背景色
+                  backgroundColor: '#1fa19b', // ヘッダーの背景色
                 },
                 headerTintColor: 'white', // ヘッダーのテキスト色
                 headerTitleStyle: {

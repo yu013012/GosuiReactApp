@@ -5,13 +5,13 @@ import { MyContextType } from '../contexts/MyContext';
 type dataProps = {
   visible: boolean,
   text: string,
-  data: MyContextType
+  data?: MyContextType|undefined
 }
 
 export const Alert = (props: dataProps) => {
   const {visible, text, data} = props
   var alert_text: string = ''
-  if (data !== undefined) {
+  if (data && data !== undefined) {
     Object.keys(data).map(key => {
       if (data[key].start_flg && data[key].allow === '↓') {
         if (alert_text !== "") {
@@ -20,7 +20,9 @@ export const Alert = (props: dataProps) => {
         alert_text = alert_text + data[key].name + 'さん'
       }
     })
-    alert_text = alert_text + 'がうつ伏せになっています。'
+    alert_text = alert_text + text
+  } else {
+    alert_text = text
   }
 
   return (

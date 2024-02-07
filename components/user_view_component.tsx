@@ -1,5 +1,5 @@
 import React from 'react'
-import {StyleSheet, View, Text, Button, TextInput, TouchableOpacity, ScrollView, ImageBackground, KeyboardAvoidingView} from 'react-native';
+import {StyleSheet, View, Text, Image, Button, TextInput, TouchableOpacity, ScrollView, ImageBackground, KeyboardAvoidingView} from 'react-native';
 import constants from '../helper/constants'
 
 type dataProps = {
@@ -9,13 +9,26 @@ type dataProps = {
   start_flg?: boolean,
   onclick?: () => void,
   timer?: string | undefined,
-  numberCount?: int
+  no?: string,
+  battery?: number
 }
 
 // ()はリターンがいらないけど、{}はいる
 export const UserView = (props: dataProps) => {
-  const { name, allow, tantou, start_flg, onclick, timer, numberCount } = props
-
+  const { name, allow, tantou, start_flg, onclick, timer, no, battery } = props
+  
+  var png_link: any = require('../assets/full.png')
+  var png_flg: boolean = false
+  if (battery == 1) {
+    png_link = require('../assets/charge.png')
+    png_flg = true
+  } else if (battery == 2) {
+    png_link = require('../assets/none.png')
+    png_flg = true
+  } else if (battery == 0) {
+    png_flg = true
+  }
+  
   return (
     <View style={styles.container}>
       <TouchableOpacity style={start_flg ? styles.start_end_button_red : styles.start_end_button} onPress={onclick}>
@@ -25,7 +38,7 @@ export const UserView = (props: dataProps) => {
 
       <View style={styles.row_view}>
         <View style={styles.number}>
-          <Text style={styles.tantou_number}>{`${numberCount}`}</Text>
+          <Text style={styles.tantou_number}>{no}</Text>
         </View>
       </View>
 
@@ -35,6 +48,14 @@ export const UserView = (props: dataProps) => {
         </View>
         <View style={styles.tantou_view2}>
           <Text style={styles.tantou_number}>{tantou ? tantou : constants.tantou_none}</Text>
+        </View>
+        <View style={styles.battery_view}>
+        {png_flg ? (
+          <Image
+            style={styles.image}
+            source={png_link}
+          />
+        ) : null}
         </View>
       </View>
 
@@ -64,7 +85,7 @@ const styles = StyleSheet.create({
     marginTop: 30,
     marginBottom: 10,
     alignItems: 'center',
-    backgroundColor: 'blue',
+    backgroundColor: '#1fa19b',
   },
   start_end_button_red: {
     color: 'white', // 文字色を黒に設定
@@ -92,24 +113,32 @@ const styles = StyleSheet.create({
   },
   tantou_view1: {
     marginTop: 5,
-    backgroundColor: 'blue',
+    backgroundColor: '#1fa19b',
     width: '20%',
     alignItems: 'center', // 要素
     justifyContent: 'center',
   },
   tantou_view2: {
     marginTop: 5,
-    backgroundColor: 'blue',
-    width: '78%',
+    backgroundColor: '#1fa19b',
+    width: '68%',
+    alignItems: 'center', // 要素
+    justifyContent: 'center',
+  },
+  battery_view: {
+    marginTop: 5,
+    backgroundColor: '#1fa19b',
+    width: '10%',
     alignItems: 'center', // 要素
     justifyContent: 'center',
   },
   allow_view: {
     justifyContent: 'center',
-    backgroundColor: 'blue',
+    backgroundColor: '#4a91ff',
     width: '20%',
     height: 100,
     alignItems: 'center', // 要素
+    
   },
   allow: {
     fontSize: 25,
@@ -119,7 +148,7 @@ const styles = StyleSheet.create({
   },
   name_view: {
     justifyContent: 'center',
-    backgroundColor: 'blue',
+    backgroundColor: '#1fa19b',
     width: '78%',
     alignItems: 'center', // 要素
     height: 100,
@@ -139,9 +168,14 @@ const styles = StyleSheet.create({
   },
   number: {
     marginTop: 5,
-    backgroundColor: 'blue',
+    backgroundColor: '#1fa19b',
     width: '100%',
     alignItems: 'center', // 要素
     justifyContent: 'center',
+  },
+  image: {
+    width: 20,
+    height: 20,
+    resizeMode: 'cover', // 画像のリサイズモード
   },
 });

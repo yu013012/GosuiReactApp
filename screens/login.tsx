@@ -216,6 +216,6 @@ const styles = StyleSheet.create({
     width: '100%', // 横幅
     margin: 100, // 要素外の余白
     alignItems: 'center',
-    backgroundColor: 'blue',
+    backgroundColor: '#1fa19b',
   },
 });

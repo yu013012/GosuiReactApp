@@ -9,7 +9,9 @@ export type MyContextType = {
     timer: any,
     timer_id: number,
     mno: string,
-    category: string
+    category: string,
+    no: string,
+    battery?: number
   },
 };
 

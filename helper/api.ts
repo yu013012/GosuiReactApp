@@ -40,6 +40,7 @@ const Api = async (props: dataProps): Promise<string | MyContextType> => {
           timer_id: 0,
           mno: response.data[`mno${i}`],
           category: response.data[`katego${i}`],
+          no: response.data[`no${i}`],
         };
       }
 

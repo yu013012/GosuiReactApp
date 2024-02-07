@@ -8,7 +8,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Api from '../helper/api'
 // export defaultなら{}無し、export constなら{}の中に記載
 import { ConvertCharacter } from '../helper/allow'
-import { Token } from '../helper/token'
 import DeviceInfo from 'react-native-device-info';
 import AlertSound from '../helper/alert'
 import AlertSoundM from '../helper/mimawari_alert'
@@ -52,8 +51,6 @@ export const Home = (props: {navigation: any}) => {
   const [isAlertView, setIsAlertView] = useState(false);
 
   const [isMimawari, setIsMimawari] = useState(false);
-
-  let number_count = 0;
 
   // android 戻るボタンの無効化
   BackHandler.addEventListener('hardwareBackPress', () => {return true});
@@ -327,12 +324,12 @@ export const Home = (props: {navigation: any}) => {
             <Text style={{color: 'white', fontSize: 20}}>{isEnabled ? 'ON' : 'OFF'}</Text>
           </View>
         </View>
-        <Text style={{color: 'white', backgroundColor: 'blue', width: '100%', padding: 10, fontSize: 20}}>トークン：{token}</Text>
+        <Text style={{color: 'white', backgroundColor: '#1fa19b', width: '100%', padding: 10, fontSize: 20}}>トークン：{token}</Text>
         {Object.keys(data).map(key => (
-          key == 'visible' ? '' : <UserView key={`${key}`} name={data[key].name} allow={data[key].allow} tantou={data[key].tantou} start_flg={data[key].start_flg} onclick={() => onClickStartEnd(key)} timer={formatTime(time[key])} numberCount={++number_count} />
+          key == 'visible' ? '' : <UserView key={`${key}`} name={data[key].name} allow={data[key].allow} tantou={data[key].tantou} start_flg={data[key].start_flg} onclick={() => onClickStartEnd(key)} timer={formatTime(time[key])} no={data[key].no} battery={data[key].battery} />
         ))}
       </View>
-      <Alert visible={isAlertView} text="うつ伏せになっています！" data={data} />
+      <Alert visible={isAlertView} text="がうつ伏せになっています！" data={data} />
     </ScrollView>
   )
 }
@@ -352,7 +349,7 @@ const styles = StyleSheet.create({
   container2: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'blue',
+    backgroundColor: '#1fa19b',
     marginBottom: 30,
     width: '100%',
     padding: 10

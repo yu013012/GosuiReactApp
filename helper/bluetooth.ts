@@ -94,8 +94,22 @@ export const BlueStart = (data: MyContextType, setData: React.Dispatch<React.Set
       var changeCount = 0;
       const updatedData = { ...data };
       let blueData: string = String(value);
+      console.log(blueData)
       let dataArray: string[] = blueData.split(',');
-
+      // バッテリーMax212、バッテリーMin100
+      // 充電中
+      if (dataArray[6] == "2") {
+        updatedData[peripheral].battery = 1
+        console.log("充電中")        
+      // バッテリー半分以下
+      } else if (parseInt(dataArray[12], 10) <= 130) {
+        updatedData[peripheral].battery = 2
+        console.log("バッテリーやばい")
+      // バッテリー問題なし
+      } else {
+        updatedData[peripheral].battery = 0
+        console.log("バッテリーまだ大丈夫")
+      }
       const uppercasedString = peripheral.toUpperCase();
       const lowercasedString = peripheral.toLowerCase();
       if (data[uppercasedString] == undefined && data[lowercasedString] == undefined) {
