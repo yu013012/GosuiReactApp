@@ -25,7 +25,7 @@ export const UserView = (props: dataProps) => {
   } else if (battery == 2) {
     png_link = require('../assets/none.png')
     png_flg = true
-  } else if (battery == 0) {
+  } else if (battery == 3) {
     png_flg = true
   }
   
