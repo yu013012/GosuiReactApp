@@ -6,6 +6,8 @@ import { Login } from '../screens/login'
 import { NavigationContainer } from '@react-navigation/native';
 import Api from '../helper/api'
 
+// 流れとしてはテストを実行できるまで設定ファイルを修正して、後はテストを書いてモックを作成しなければならない場合はエラーが出るので追加していく流れ。
+
 // 下記本来はsetup.jsに記載するもの
 jest.mock('react-native/Libraries/EventEmitter/NativeEventEmitter');
 
