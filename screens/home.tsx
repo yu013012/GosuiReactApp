@@ -306,10 +306,16 @@ export const Home = (props: {navigation: any}) => {
     return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
   };
 
+  const handlePress = async (mno: string, token: string) => {
+    // Viewがクリックされたときのアクション
+    console.log('Viewがクリックされました');
+    BlueEnd(data);
+    const tno = await AsyncStorage.getItem('tno')
+    navigation.navigate('sensor', { mno: mno, token: token, tno: tno });
+  };
+
   return (
-
     <ScrollView>
-
       <View style={styles.container}>
         <View style={styles.container2}>
           <Text style={{color: 'white', fontSize: 20}}>見回りアラート：</Text>
@@ -326,7 +332,7 @@ export const Home = (props: {navigation: any}) => {
         </View>
         <Text style={{color: 'white', backgroundColor: '#1fa19b', width: '100%', padding: 10, fontSize: 20}}>トークン：{token}</Text>
         {Object.keys(data).map(key => (
-          key == 'visible' ? '' : <UserView key={`${key}`} name={data[key].name} allow={data[key].allow} tantou={data[key].tantou} start_flg={data[key].start_flg} onclick={() => onClickStartEnd(key)} timer={formatTime(time[key])} no={data[key].no} battery={data[key].battery} />
+          key == 'visible' ? '' : <UserView key={`${key}`} name={data[key].name} allow={data[key].allow} tantou={data[key].tantou} start_flg={data[key].start_flg} onclick={() => onClickStartEnd(key)} timer={formatTime(time[key])} no={data[key].no} battery={data[key].battery} sensor_connect={() => handlePress(data[key].mno, token)} />
         ))}
       </View>
       <Alert visible={isAlertView} text="がうつ伏せになっています！" data={data} />

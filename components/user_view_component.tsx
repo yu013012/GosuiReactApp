@@ -1,5 +1,5 @@
 import React from 'react'
-import {StyleSheet, View, Text, Image, Button, TextInput, TouchableOpacity, ScrollView, ImageBackground, KeyboardAvoidingView} from 'react-native';
+import {StyleSheet, View, Text, Image, Button, TextInput, TouchableOpacity, ScrollView, ImageBackground, Alert} from 'react-native';
 import constants from '../helper/constants'
 
 type dataProps = {
@@ -10,12 +10,13 @@ type dataProps = {
   onclick?: () => void,
   timer?: string | undefined,
   no?: string,
-  battery?: number
+  battery?: number,
+  sensor_connect?: () => void
 }
 
 // ()はリターンがいらないけど、{}はいる
 export const UserView = (props: dataProps) => {
-  const { name, allow, tantou, start_flg, onclick, timer, no, battery } = props
+  const { name, allow, tantou, start_flg, onclick, timer, no, battery, sensor_connect } = props
   
   var png_link: any = require('../assets/full.png')
   var png_flg: boolean = false
@@ -60,9 +61,11 @@ export const UserView = (props: dataProps) => {
       </View>
 
       <View style={styles.row_view}>
-        <View style={styles.allow_view}>
-          <Text style={styles.allow}>{allow}</Text>
-        </View>
+        <TouchableOpacity style={styles.allow_button} onPress={sensor_connect}>
+          <View style={styles.allow_view}>
+            <Text style={styles.allow}>{allow}</Text>
+          </View>
+        </TouchableOpacity>
         <View style={styles.name_view}>
           <Text style={styles.name}>{name}</Text>
         </View>
@@ -135,10 +138,13 @@ const styles = StyleSheet.create({
   allow_view: {
     justifyContent: 'center',
     backgroundColor: '#4a91ff',
+    width: '100%',
+    height: '100%',
+    alignItems: 'center', // 要素
+  },
+  allow_button: {
     width: '20%',
     height: 100,
-    alignItems: 'center', // 要素
-    
   },
   allow: {
     fontSize: 25,

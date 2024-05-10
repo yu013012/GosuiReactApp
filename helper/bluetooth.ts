@@ -12,7 +12,7 @@ export const BlueStart = (data: MyContextType, setData: React.Dispatch<React.Set
     const flg = await BleManager.start({showAlert: false}).then(() => {
       return true;
     }).catch((error) => {
-      console.log('初期化失敗')
+      // console.log('初期化失敗')
       return false;
     });
 
@@ -25,7 +25,7 @@ export const BlueStart = (data: MyContextType, setData: React.Dispatch<React.Set
   // 10秒に一回ほど通知を受け取っているか確認し、受け取っていなければ接続を試みる
   const blueconnect = async (args: any) => {
     BleManager.connect(args.id).then(() => {
-      console.log(`connectしました${args.id}`)
+      // console.log(`connectしました${args.id}`)
       // 書き込みに必要、iosは通知にも必要？
       BleManager.retrieveServices(`${args.id}`).then(
         (peripheralInfo) => {
@@ -44,14 +44,14 @@ export const BlueStart = (data: MyContextType, setData: React.Dispatch<React.Set
               "00005991-B131-3396-014C-664C9867B917"
             )
             .then(() => {
-              console.log("通知設定完了")
+              // console.log("通知設定完了")
             }).catch((error) => {
               console.log("通知設定失敗");
               blueconnect(args)
             });
           })
           .catch((error) => {
-            console.log(`書き込みに失敗${error}`);
+            // console.log(`書き込みに失敗${error}`);
             blueconnect(args)
           });
         }
@@ -94,7 +94,7 @@ export const BlueStart = (data: MyContextType, setData: React.Dispatch<React.Set
       var changeCount = 0;
       const updatedData = { ...data };
       let blueData: string = String(value);
-      console.log(blueData)
+      // console.log(blueData)
       let dataArray: string[] = blueData.split(',');
       
       const uppercasedString = peripheral.toUpperCase();

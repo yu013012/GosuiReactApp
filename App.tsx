@@ -22,6 +22,7 @@ import {
 // screen
 import { Login } from './screens/login'
 import { Home } from './screens/home'
+import Sensor from './screens/sensor'
 
 // navigation
 import 'react-native-gesture-handler';
@@ -58,6 +59,21 @@ const App = () => {
             <Stack.Screen
               name="home"
               component={Home}
+              options={{
+                title: '午睡チェック', // ヘッダーに表示するタイトル
+                headerStyle: {
+                  backgroundColor: '#1fa19b', // ヘッダーの背景色
+                },
+                headerTintColor: 'white', // ヘッダーのテキスト色
+                headerTitleStyle: {
+                  fontWeight: 'bold', // ヘッダータイトルのスタイル
+                },
+                headerLeft: () => null, // バックボタンを非表示にする
+              }}
+            />
+            <Stack.Screen
+              name="sensor"
+              component={Sensor}
               options={{
                 title: '午睡チェック', // ヘッダーに表示するタイトル
                 headerStyle: {
