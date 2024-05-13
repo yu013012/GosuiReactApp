@@ -61,14 +61,12 @@ export const Home = (props: {navigation: any}) => {
 
   // アラート監視、5分おきAPI
   useEffect(() => {
-    console.log("dsfd")
     const alertAndApi = () => {
       // うつ伏せカウント
       let visibleCount: number = 0
       // 時間の計算、5分で割り切れればtrue
       const now = new Date();
       const minutes = now.getMinutes();
-      console.log(minutes)
       const isFiveMinuteInterval = minutes % 5 === 0;
 
       // apiフラグをリセット
@@ -76,20 +74,16 @@ export const Home = (props: {navigation: any}) => {
         setApiSend((apiSend_) => {
           return {};
         });
-        console.log("来たよーーーーーーーーーーーーー")
       }
 
       // ()だと1文だけだからifでエラーが出ていた
       Object.keys(data).map(key => {
         // データ更新用apiを送る
-        console.log(`${key}:${isFiveMinuteInterval}|${apiSend[key]}|${data[key].start_flg}`)
         if (isFiveMinuteInterval && apiSend[key] !== 1 && data[key].start_flg == true) {
-          console.log(`${minutes}分なので${key}を更新します`)
           UpdateApi(key)
         }
 
         if (data[key].allow === "↓" && data[key].start_flg == true) {
-          console.log(`アラート出します${key}`)
           visibleCount++
         }
       })
@@ -149,7 +143,6 @@ export const Home = (props: {navigation: any}) => {
 
       // 見回り設定がオンだったら
       if (isEnabled) {
-        console.log("設定がオンになった")
         if (!isFiveMinuteInterval && isMimawari) {
           setIsMimawari((isMimawari) => {
             return false;
@@ -308,7 +301,6 @@ export const Home = (props: {navigation: any}) => {
 
   const handlePress = async (mno: string, token: string) => {
     // Viewがクリックされたときのアクション
-    console.log('Viewがクリックされました');
     BlueEnd(data);
     const tno = await AsyncStorage.getItem('tno')
     navigation.navigate('sensor', { mno: mno, token: token, tno: tno });

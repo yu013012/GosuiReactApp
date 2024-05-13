@@ -50,7 +50,7 @@ export const BlueStart = (mno_: string, token_: string, tno_: string) => {
       BleManager.retrieveServices(`${args.id}`).then(
         (peripheralInfo) => {
           // Success code
-          console.log("Peripheral info:", peripheralInfo);
+          // console.log("Peripheral info:", peripheralInfo);
           BleManager.writeWithoutResponse(
             args.id,
             "0000C62E-9910-0BAC-5241-D8BDA6932A2F",
@@ -64,7 +64,7 @@ export const BlueStart = (mno_: string, token_: string, tno_: string) => {
               "00005991-B131-3396-014C-664C9867B917"
             )
             .then(() => {
-              console.log("通知設定完了")
+              // console.log("通知設定完了")
             }).catch((error) => {
               console.log("通知設定失敗");
               blueconnect(args)
@@ -86,7 +86,7 @@ export const BlueStart = (mno_: string, token_: string, tno_: string) => {
   // 定期的なスキャンを開始するタイマー
   const bluescan = async () => {
     await BleManager.scan([], 5000, true).then(() => {
-      console.log("scan開始");
+      // console.log("scan開始");
     })
   }
 
@@ -97,7 +97,7 @@ export const BlueStart = (mno_: string, token_: string, tno_: string) => {
     'BleManagerDiscoverPeripheral',
     (args) => {
       if (args.name == "AKOI_HEART") {
-        console.log(args);
+        // console.log(args);
         // 下記接続処理
         blueconnect(args)
       }
@@ -126,10 +126,9 @@ export const BlueStart = (mno_: string, token_: string, tno_: string) => {
             TOKEN: token,
         }
         await ApiConnect({ params_: params })
-        // APIで送る、トークン、id、ナンバー
         handleRestart()
       } else {
-        console.log("違う、接続キル")
+        // console.log("違う、接続キル")
         BleManager.stopNotification(
             peripheral,
             "0000C62E-9910-0BAC-5241-D8BDA6932A2F",

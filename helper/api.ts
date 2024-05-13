@@ -13,8 +13,8 @@ const Api = async (props: dataProps): Promise<string | MyContextType> => {
   const {act, params, setData} = props
   const result: string | {} = await axios({
     method: 'GET',
-    //url: "https://www.it-service.co.jp/cgi-local/gosui/gosui_app.pl",
-    url: "https://www.cloudtest2.pw/cgi-local/gosui/gosui_app.pl",
+    url: "https://www.it-service.co.jp/cgi-local/gosui/gosui_app.pl",
+    //url: "https://www.cloudtest2.pw/cgi-local/gosui/gosui_app.pl",
     params: params,
   })
   .then(response => {
@@ -53,7 +53,7 @@ const Api = async (props: dataProps): Promise<string | MyContextType> => {
       return data
     } else if (act == 'update_data') {
       if (response.data) {
-        console.log(`担当: ${response.config.params.tantou_react}失敗`)
+        // console.log(`担当: ${response.config.params.tantou_react}失敗`)
         return "ng"
       }
     }

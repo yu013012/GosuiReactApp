@@ -8,20 +8,18 @@ const screenHeight = Dimensions.get('window').height;
 
 const Sensor = () => {
     const route = useRoute();
-    const { mno, token, tno } = route.params;
-    console.log(mno);
-    console.log(token);
-    console.log(tno);
+    const { mno, token, tno } = route.params as { mno?: string, token?: string, tno?: string };
 
     useEffect(() => {
-
-        BlueStart(mno, token, tno);
+        if (mno && token && tno) {
+            BlueStart(mno, token, tno);
+        }
     
         // アンマウント処理
         return () => {
            BlueEnd()
         }
-      }, []);
+      }, [mno, token, tno]);
 
     return (
         <View style={styles.container}>

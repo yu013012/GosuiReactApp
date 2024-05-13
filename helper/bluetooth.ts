@@ -30,7 +30,7 @@ export const BlueStart = (data: MyContextType, setData: React.Dispatch<React.Set
       BleManager.retrieveServices(`${args.id}`).then(
         (peripheralInfo) => {
           // Success code
-          console.log("Peripheral info:", peripheralInfo);
+          // console.log("Peripheral info:", peripheralInfo);
           BleManager.writeWithoutResponse(
             args.id,
             "0000C62E-9910-0BAC-5241-D8BDA6932A2F",
@@ -46,7 +46,7 @@ export const BlueStart = (data: MyContextType, setData: React.Dispatch<React.Set
             .then(() => {
               // console.log("通知設定完了")
             }).catch((error) => {
-              console.log("通知設定失敗");
+              // console.log("通知設定失敗");
               blueconnect(args)
             });
           })
@@ -118,21 +118,21 @@ export const BlueStart = (data: MyContextType, setData: React.Dispatch<React.Set
           changeCount++;
         }
         updatedData[peripheral].battery = 1
-        console.log("充電中")        
+        // console.log("充電中")        
       // バッテリー半分以下
       } else if (parseInt(dataArray[12], 10) <= 130) {
         if (updatedData[peripheral].battery != 2) {
           changeCount++;
         }
         updatedData[peripheral].battery = 2
-        console.log("バッテリーやばい")
+        // console.log("バッテリーやばい")
       // バッテリー問題なし
       } else {
         if (updatedData[peripheral].battery != 3) {
           changeCount++;
         }
         updatedData[peripheral].battery = 3
-        console.log("バッテリーまだ大丈夫")
+        // console.log("バッテリーまだ大丈夫")
       }
 
       // うつ伏せ
@@ -202,7 +202,7 @@ export const BlueEnd = (data: MyContextType) => {
       BleManager.disconnect(key)
       .then(() => {
         // Success code
-        console.log(`${key}：切断`);
+        // console.log(`${key}：切断`);
       })
       .catch((error) => {
         // Failure code

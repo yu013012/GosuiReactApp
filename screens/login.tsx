@@ -48,25 +48,20 @@ export const Login = (props: {navigation: any}) => {
       .then((result) => {
         switch (result) {
           case 'granted':
-            console.log("ok")
             bluetooth2()
             break;
           case 'denied':
             // 位置情報の権限が拒否されている場合の処理
-            console.log("no")
             request('android.permission.BLUETOOTH_SCAN')
               .then((newResult) => {
                 if (newResult === 'granted') {
-                  console.log("okを押した")
                   bluetooth2()
                 } else {
-                  console.log("noを押した")
                   setVisible(true)
                 }
               });
             break;
           default:
-            console.log("no")
             setVisible(true)
             break;
         }
@@ -79,25 +74,20 @@ export const Login = (props: {navigation: any}) => {
       .then((result) => {
         switch (result) {
           case 'granted':
-            console.log("ok")
             location()
             break;
           case 'denied':
             // 位置情報の権限が拒否されている場合の処理
-            console.log("no")
             request('android.permission.BLUETOOTH_CONNECT')
               .then((newResult) => {
                 if (newResult === 'granted') {
-                  console.log("okを押した")
                   location()
                 } else {
-                  console.log("noを押した")
                   setVisible(true)
                 }
               });
             break;
           default:
-            console.log("no")
             setVisible(true)
             break;
         }
@@ -109,25 +99,20 @@ export const Login = (props: {navigation: any}) => {
       .then((result) => {
         switch (result) {
           case 'granted':
-            console.log("ok")
             autoLogin();
             break;
           case 'denied':
             // 位置情報の権限が拒否されている場合の処理
-            console.log("no")
             request('android.permission.ACCESS_FINE_LOCATION')
               .then((newResult) => {
                 if (newResult === 'granted') {
-                  console.log("okを押した")
                   autoLogin();
                 } else {
-                  console.log("noを押した")
                   setVisible(true)
                 }
               });
             break;
           default:
-            console.log("no");
             setVisible(true)
             break;
         }
