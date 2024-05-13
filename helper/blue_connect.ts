@@ -107,7 +107,7 @@ export const BlueStart = (mno_: string, token_: string, tno_: string) => {
   // 定期的に通知を取得
   bleManagerEmitter.addListener(
     "BleManagerDidUpdateValueForCharacteristic",
-    ({ value, peripheral, characteristic, service }) => {
+    async ({ value, peripheral, characteristic, service }) => {
       // setStateで値の変更をする場合下記のように別変数に定義しないといけない
       let blueData: string = String(value);
       // console.log(blueData)
@@ -125,7 +125,7 @@ export const BlueStart = (mno_: string, token_: string, tno_: string) => {
             ID: peripheral,
             TOKEN: token,
         }
-        ApiConnect({ params_: params })
+        await ApiConnect({ params_: params })
         // APIで送る、トークン、id、ナンバー
         handleRestart()
       } else {
