@@ -8,7 +8,7 @@ type dataProps = {
   data?: MyContextType|undefined
 }
 
-export const Alert = (props: dataProps) => {
+export const Alert_ = (props: dataProps) => {
   const {visible, text, data} = props
   var alert_text: string = ''
   if (data && data !== undefined) {

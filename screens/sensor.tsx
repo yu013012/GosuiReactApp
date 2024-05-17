@@ -25,9 +25,8 @@ const Sensor = () => {
         <View style={styles.container}>
             <View style={styles.container2}>
                 <Text style={{color: 'white', fontSize: 20}}>
-                    センサーの接続を行っております。{'\n'}
                     接続するセンサーを充電コードに接続してください。{'\n'}
-                    接続が完了したらアプリは再起動されます。
+                    接続完了後、アプリを再起動します。
                 </Text>
             </View>
             <View>

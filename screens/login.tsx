@@ -7,7 +7,7 @@ import Input from '../components/input_text_component'
 import constants from '../helper/constants'
 import Api from '../helper/api'
 import { check, request } from 'react-native-permissions';
-import { Alert } from '../components/alert_component';
+import { Alert_ } from '../components/alert_component';
 
 const screenHeight = Dimensions.get('window').height;
 
@@ -144,7 +144,7 @@ export const Login = (props: {navigation: any}) => {
   return (
       <View>
         <ScrollView>
-          <Alert visible={visible} text="位置情報、bluetoothの権限が許可されていません。許可したうえで再度アプリを起動してください。" />
+          <Alert_ visible={visible} text="位置情報、bluetoothの権限が許可されていません。許可したうえで再度アプリを起動してください。" />
           <ImageBackground
             source={require('../assets/login.jpg')}
             style={styles.backgroundImage}

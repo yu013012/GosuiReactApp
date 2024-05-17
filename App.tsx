@@ -49,6 +49,7 @@ const App = () => {
                 headerStyle: {
                   backgroundColor: '#1fa19b', // ヘッダーの背景色
                 },
+                gestureEnabled: false,
                 headerTintColor: 'white', // ヘッダーのテキスト色
                 headerTitleStyle: {
                   fontWeight: 'bold', // ヘッダータイトルのスタイル
@@ -64,6 +65,7 @@ const App = () => {
                 headerStyle: {
                   backgroundColor: '#1fa19b', // ヘッダーの背景色
                 },
+                gestureEnabled: false,
                 headerTintColor: 'white', // ヘッダーのテキスト色
                 headerTitleStyle: {
                   fontWeight: 'bold', // ヘッダータイトルのスタイル
@@ -79,6 +81,7 @@ const App = () => {
                 headerStyle: {
                   backgroundColor: '#1fa19b', // ヘッダーの背景色
                 },
+                gestureEnabled: false,
                 headerTintColor: 'white', // ヘッダーのテキスト色
                 headerTitleStyle: {
                   fontWeight: 'bold', // ヘッダータイトルのスタイル

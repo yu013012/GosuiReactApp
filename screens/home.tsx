@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useCallback, useMemo } from 'react'
-import {StyleSheet, View, Text, Button, TextInput, TouchableOpacity, ScrollView, ImageBackground, KeyboardAvoidingView, Dimensions, BackHandler, Switch } from 'react-native';
+import {StyleSheet, View, Text, Button, TextInput, TouchableOpacity, ScrollView, ImageBackground, KeyboardAvoidingView, Dimensions, BackHandler, Switch, Alert } from 'react-native';
 import { UserView } from '../components/user_view_component';
 import { useMyContext, MyContextType } from '../contexts/MyContext';
-import { Alert } from '../components/alert_component';
+import { Alert_ } from '../components/alert_component';
 import {BlueStart, BlueEnd} from '../helper/bluetooth'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Api from '../helper/api'
@@ -306,6 +306,17 @@ export const Home = (props: {navigation: any}) => {
     navigation.navigate('sensor', { mno: mno, token: token, tno: tno });
   };
 
+  const createConfirmAlert = (mno: string, token: string) =>
+    Alert.alert('センサーの接続設定を行いますか？', '', [
+      {
+        text: 'いいえ',
+        onPress: () => console.log('Cancel Pressed'),
+        style: 'cancel',
+      },
+      {text: 'はい', onPress: () => handlePress(mno, token)},
+    ]
+  );
+
   return (
     <ScrollView>
       <View style={styles.container}>
@@ -324,10 +335,10 @@ export const Home = (props: {navigation: any}) => {
         </View>
         <Text style={{color: 'white', backgroundColor: '#1fa19b', width: '100%', padding: 10, fontSize: 20}}>トークン：{token}</Text>
         {Object.keys(data).map(key => (
-          key == 'visible' ? '' : <UserView key={`${key}`} name={data[key].name} allow={data[key].allow} tantou={data[key].tantou} start_flg={data[key].start_flg} onclick={() => onClickStartEnd(key)} timer={formatTime(time[key])} no={data[key].no} battery={data[key].battery} sensor_connect={() => handlePress(data[key].mno, token)} />
+          key == 'visible' ? '' : <UserView key={`${key}`} name={data[key].name} allow={data[key].allow} tantou={data[key].tantou} start_flg={data[key].start_flg} onclick={() => onClickStartEnd(key)} timer={formatTime(time[key])} no={data[key].no} battery={data[key].battery} sensor_connect={() => createConfirmAlert(data[key].mno, token)} />
         ))}
       </View>
-      <Alert visible={isAlertView} text="がうつ伏せになっています！" data={data} />
+      <Alert_ visible={isAlertView} text="がうつ伏せになっています！" data={data} />
     </ScrollView>
   )
 }
