@@ -11,7 +11,9 @@ export type MyContextType = {
     mno: string,
     category: string,
     no: string,
-    battery: number
+    battery: number,
+    motion: number,
+    motion_count: number
   },
 };
 

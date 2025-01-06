@@ -11,6 +11,8 @@ type dataProps = {
 export const Alert_ = (props: dataProps) => {
   const {visible, text, data} = props
   var alert_text: string = ''
+  var alert_motion_text: string = ''
+  // yniwa うつ伏せ体動、体動パターンの追加
   if (data && data !== undefined) {
     Object.keys(data).map(key => {
       if (data[key].start_flg && data[key].allow === '↓') {
@@ -19,9 +21,28 @@ export const Alert_ = (props: dataProps) => {
         }
         alert_text = alert_text + data[key].name + 'さん'
       }
+
+      if (data[key].start_flg && data[key].motion_count >= 10) {
+        if (alert_motion_text !== "") {
+          alert_motion_text = alert_motion_text + "、"
+        }
+        alert_motion_text = alert_motion_text + data[key].name + 'さん'
+      }
     })
-    alert_text = alert_text + text
+    if (alert_text) {
+      alert_text = alert_text + text
+    }
+
+    if (alert_motion_text) {
+      alert_motion_text = alert_motion_text + 'が体動数値が危険です！'
+      if (alert_text) {
+        alert_text = alert_text + '\n' + alert_motion_text
+      } else {
+        alert_text = alert_motion_text
+      }
+    }
   } else {
+    // 
     alert_text = text
   }
 

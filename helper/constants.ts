@@ -9,6 +9,7 @@ const constants = {
   end: '午睡チェック終了',
   tantou: '担当',
   tantou_none: '担当者は設定されていません',
+  motion: '体動',
 }
 
 export default constants;

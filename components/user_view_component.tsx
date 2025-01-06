@@ -11,12 +11,13 @@ type dataProps = {
   timer?: string | undefined,
   no?: string,
   battery?: number,
-  sensor_connect?: () => void
+  sensor_connect?: () => void,
+  motion?: number,
 }
 
 // ()はリターンがいらないけど、{}はいる
 export const UserView = (props: dataProps) => {
-  const { name, allow, tantou, start_flg, onclick, timer, no, battery, sensor_connect } = props
+  const { name, allow, tantou, start_flg, onclick, timer, no, battery, sensor_connect, motion } = props
   
   var png_link: any = require('../assets/full.png')
   var png_flg: boolean = false
@@ -40,6 +41,15 @@ export const UserView = (props: dataProps) => {
       <View style={styles.row_view}>
         <View style={styles.number}>
           <Text style={styles.tantou_number}>{no}</Text>
+        </View>
+      </View>
+
+      <View style={styles.row_view}>
+        <View style={styles.motion_view}>
+          <Text style={styles.tantou_number}>{constants.motion}</Text>
+        </View>
+        <View style={styles.motion_view2}>
+          <Text style={styles.tantou_number}>{motion}</Text>
         </View>
       </View>
 
@@ -145,6 +155,20 @@ const styles = StyleSheet.create({
   allow_button: {
     width: '20%',
     height: 100,
+  },
+  motion_view: {
+    justifyContent: 'center',
+    backgroundColor: '#1fa19b',
+    alignItems: 'center', // 要素
+    width: '20%',
+    height: 40,
+  },
+  motion_view2: {
+    justifyContent: 'center',
+    backgroundColor: '#1fa19b',
+    width: '78%',
+    alignItems: 'center', // 要素
+    height: 40,
   },
   allow: {
     fontSize: 25,

@@ -83,7 +83,7 @@ export const Home = (props: {navigation: any}) => {
           UpdateApi(key)
         }
 
-        if (data[key].allow === "↓" && data[key].start_flg == true) {
+        if ((data[key].allow === "↓" || data[key].motion_count >= 10) && data[key].start_flg == true) {
           visibleCount++
         }
       })
@@ -335,7 +335,7 @@ export const Home = (props: {navigation: any}) => {
         </View>
         <Text style={{color: 'white', backgroundColor: '#1fa19b', width: '100%', padding: 10, fontSize: 20}}>トークン：{token}</Text>
         {Object.keys(data).map(key => (
-          key == 'visible' ? '' : <UserView key={`${key}`} name={data[key].name} allow={data[key].allow} tantou={data[key].tantou} start_flg={data[key].start_flg} onclick={() => onClickStartEnd(key)} timer={formatTime(time[key])} no={data[key].no} battery={data[key].battery} sensor_connect={() => createConfirmAlert(data[key].mno, token)} />
+          key == 'visible' ? '' : <UserView key={`${key}`} name={data[key].name} allow={data[key].allow} tantou={data[key].tantou} start_flg={data[key].start_flg} onclick={() => onClickStartEnd(key)} timer={formatTime(time[key])} no={data[key].no} battery={data[key].battery} sensor_connect={() => createConfirmAlert(data[key].mno, token)} motion={data[key].motion} />
         ))}
       </View>
       <Alert_ visible={isAlertView} text="がうつ伏せになっています！" data={data} />

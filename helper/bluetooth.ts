@@ -7,8 +7,8 @@ const bleManagerEmitter = new NativeEventEmitter(BleManagerModule);
 
 let scanTimer: any;
 
-export const BlueStart = (data: MyContextType, setData: React.Dispatch<React.SetStateAction<MyContextType>>) => {
-  const bluestart = async () => {
+  export const BlueStart = (data: MyContextType, setData: React.Dispatch<React.SetStateAction<MyContextType>>) => {
+    const bluestart = async () => {
     const flg = await BleManager.start({showAlert: false}).then(() => {
       return true;
     }).catch((error) => {
@@ -94,9 +94,7 @@ export const BlueStart = (data: MyContextType, setData: React.Dispatch<React.Set
       var changeCount = 0;
       const updatedData = { ...data };
       let blueData: string = String(value);
-      // console.log(blueData)
       let dataArray: string[] = blueData.split(',');
-      
       const uppercasedString = peripheral.toUpperCase();
       const lowercasedString = peripheral.toLowerCase();
       if (data[uppercasedString] == undefined && data[lowercasedString] == undefined) {
@@ -134,6 +132,36 @@ export const BlueStart = (data: MyContextType, setData: React.Dispatch<React.Set
         updatedData[peripheral].battery = 3
         // console.log("バッテリーまだ大丈夫")
       }
+      
+      // 体動の取得↓
+      // 加速度データを取得 (16進数 → 10進数)
+      const wxUpperHex: string = dataArray[9]; // 上位バイト
+      const wxLowerHex: string = dataArray[10]; // 下位バイト
+
+      // 結合して加速度値を取得 (2バイト → 16ビット)
+      const rawAcceleration: number = parseInt(wxUpperHex + wxLowerHex, 16);
+
+      // 必要であれば2's complementを考慮して変換
+      const signedAcceleration: number = rawAcceleration > 0x7FFF
+      ? rawAcceleration - 0x10000
+      : rawAcceleration;
+
+      // スケール変換（例: 1 LSB = 0.1 m/s²）
+      const acceleration: number = signedAcceleration * 0.1;
+
+      // 体動の計算例: 動きの大きさ
+      const motion: number = Math.min(1000, Math.floor(Math.abs(acceleration - 9.8))); // 重力を差し引く
+      
+      // 体動登録
+      if (updatedData[peripheral].motion != motion) {
+        changeCount++;
+        if (updatedData[peripheral].motion <= 20) {
+          updatedData[peripheral].motion_count++;
+        } else {
+          updatedData[peripheral].motion_count = 0;
+        }
+      }
+      updatedData[peripheral].motion = motion;
 
       // うつ伏せ
       if (31 <= Number(dataArray[17]) && Number(dataArray[17]) <= 65) {
