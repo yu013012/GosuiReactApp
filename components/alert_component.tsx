@@ -5,7 +5,7 @@ import { MyContextType } from '../contexts/MyContext';
 type dataProps = {
   visible: boolean,
   text: string,
-  data?: MyContextType|undefined
+  data?: MyContextType|undefined,
 }
 
 export const Alert_ = (props: dataProps) => {

@@ -46,6 +46,8 @@ export const Home = (props: {navigation: any}) => {
 
   const [isEnabled, setIsEnabled] = useState(false);
 
+  const [isEnabled2, setIsEnabled2] = useState(false);
+
   const [isAlert, setIsAlert] = useState(false);
 
   const [isAlertView, setIsAlertView] = useState(false);
@@ -57,6 +59,10 @@ export const Home = (props: {navigation: any}) => {
 
   const toggleSwitch = () => {
     setIsEnabled((previousState) => !previousState);
+  };
+
+  const toggleSwitch2 = () => {
+    setIsEnabled2((previousState) => !previousState);
   };
 
   // アラート監視、5分おきAPI
@@ -83,7 +89,7 @@ export const Home = (props: {navigation: any}) => {
           UpdateApi(key)
         }
 
-        if ((data[key].allow === "↓" || data[key].motion_count >= 10) && data[key].start_flg == true) {
+        if ((data[key].allow === "↓" || data[key].motion_count >= 10) && data[key].start_flg == true && isEnabled2) {
           visibleCount++
         }
       })
@@ -331,6 +337,19 @@ export const Home = (props: {navigation: any}) => {
               value={isEnabled}
             />
             <Text style={{color: 'white', fontSize: 20}}>{isEnabled ? 'ON' : 'OFF'}</Text>
+          </View>
+        </View>
+        <View style={styles.container2}>
+          <Text style={{color: 'white', fontSize: 20}}>体動アラート：</Text>
+          <View style={styles.toggleContainer}>
+            <Switch
+              trackColor={{ false: '#767577', true: '#81b0ff' }}
+              thumbColor={isEnabled2 ? '#f5dd4b' : '#f4f3f4'}
+              ios_backgroundColor="#3e3e3e"
+              onValueChange={toggleSwitch2}
+              value={isEnabled2}
+            />
+            <Text style={{color: 'white', fontSize: 20}}>{isEnabled2 ? 'ON' : 'OFF'}</Text>
           </View>
         </View>
         <Text style={{color: 'white', backgroundColor: '#1fa19b', width: '100%', padding: 10, fontSize: 20}}>トークン：{token}</Text>
