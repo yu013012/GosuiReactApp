@@ -118,13 +118,13 @@ let scanTimer: any;
         updatedData[peripheral].battery = 1
         // console.log("充電中")        
       // バッテリー半分以下
-      } else if (parseInt(dataArray[12], 19) == 13 && parseInt(dataArray[12], 10) <= 110) {
+      } else if (parseInt(dataArray[19], 10) == 13 && parseInt(dataArray[12], 10) <= 110) {
         if (updatedData[peripheral].battery != 2) {
           changeCount++;
         }
         updatedData[peripheral].battery = 2
       // バッテリー半分以下新センサー
-      } else if (parseInt(dataArray[12], 19) == 90 && parseInt(dataArray[12], 10) <= 5) {
+      } else if (parseInt(dataArray[19], 10) == 90 && parseInt(dataArray[12], 10) <= 5) {
         if (updatedData[peripheral].battery != 2) {
           changeCount++;
         }
