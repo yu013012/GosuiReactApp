@@ -89,7 +89,7 @@ export const Home = (props: {navigation: any}) => {
           UpdateApi(key)
         }
 
-        if ((data[key].allow === "↓" || data[key].motion_count >= 10) && data[key].start_flg == true && isEnabled2) {
+        if ((data[key].allow === "↓" || (data[key].motion_count >= 10 && isEnabled2)) && data[key].start_flg == true) {
           visibleCount++
         }
       })
